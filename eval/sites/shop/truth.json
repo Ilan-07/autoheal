@@ -1,0 +1,170 @@
+[
+ {
+  "sku": "SKU-1000",
+  "name": "Nimbus Desk Lamp",
+  "price": 83.13,
+  "rating": 3.3,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1007",
+  "name": "Harbor Mug",
+  "price": 24.81,
+  "rating": 4.1,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1014",
+  "name": "Copper Lantern",
+  "price": 143.21,
+  "rating": 4.8,
+  "stock": "Low stock"
+ },
+ {
+  "sku": "SKU-1021",
+  "name": "Vellum Backpack",
+  "price": 16.7,
+  "rating": 3.9,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1028",
+  "name": "Alder Stool",
+  "price": 63.83,
+  "rating": 4.1,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1035",
+  "name": "Quartz Notebook",
+  "price": 199.83,
+  "rating": 3.2,
+  "stock": "Low stock"
+ },
+ {
+  "sku": "SKU-1042",
+  "name": "Marlow Speaker",
+  "price": 154.31,
+  "rating": 4.2,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1049",
+  "name": "Ferrous Tray",
+  "price": 141.89,
+  "rating": 3.8,
+  "stock": "Low stock"
+ },
+ {
+  "sku": "SKU-1056",
+  "name": "Pallas Chair",
+  "price": 18.81,
+  "rating": 4.7,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1063",
+  "name": "Bramble Pitcher",
+  "price": 105.24,
+  "rating": 4.1,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1070",
+  "name": "Sable Kettle",
+  "price": 137.98,
+  "rating": 4.4,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1077",
+  "name": "Onyx Clock",
+  "price": 142.93,
+  "rating": 4.3,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1084",
+  "name": "Nimbus Desk Lamp",
+  "price": 30.6,
+  "rating": 4.4,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1091",
+  "name": "Harbor Mug",
+  "price": 151.61,
+  "rating": 4.0,
+  "stock": "Backorder"
+ },
+ {
+  "sku": "SKU-1098",
+  "name": "Copper Lantern",
+  "price": 188.32,
+  "rating": 3.9,
+  "stock": "Backorder"
+ },
+ {
+  "sku": "SKU-1105",
+  "name": "Vellum Backpack",
+  "price": 91.89,
+  "rating": 3.5,
+  "stock": "Low stock"
+ },
+ {
+  "sku": "SKU-1112",
+  "name": "Alder Stool",
+  "price": 170.17,
+  "rating": 3.5,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1119",
+  "name": "Quartz Notebook",
+  "price": 129.85,
+  "rating": 4.8,
+  "stock": "Backorder"
+ },
+ {
+  "sku": "SKU-1126",
+  "name": "Marlow Speaker",
+  "price": 74.8,
+  "rating": 5.0,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1133",
+  "name": "Ferrous Tray",
+  "price": 126.77,
+  "rating": 3.3,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1140",
+  "name": "Pallas Chair",
+  "price": 43.26,
+  "rating": 4.0,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1147",
+  "name": "Bramble Pitcher",
+  "price": 231.19,
+  "rating": 3.2,
+  "stock": "In stock"
+ },
+ {
+  "sku": "SKU-1154",
+  "name": "Sable Kettle",
+  "price": 86.91,
+  "rating": 3.7,
+  "stock": "Backorder"
+ },
+ {
+  "sku": "SKU-1161",
+  "name": "Onyx Clock",
+  "price": 142.54,
+  "rating": 3.9,
+  "stock": "In stock"
+ }
+]

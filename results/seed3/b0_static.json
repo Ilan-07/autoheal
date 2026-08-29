@@ -1,0 +1,1807 @@
+[
+ {
+  "site": "books",
+  "recipe": "clean",
+  "seed": 3,
+  "severity": 0,
+  "mutations": [],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "class_rename",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (product_pod, product_price, price_color, instock...)",
+    "changed": 8
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 0.75,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 0.0,
+   "url": 1.0
+  },
+  "avg_fill": 0.75,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 0.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "price"
+  ],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "tag_swap",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 100 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 100
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 20,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "price": 0.0,
+   "availability": 0.0,
+   "url": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "title": 0.0,
+   "price": 0.0,
+   "availability": 0.0,
+   "url": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "reparent",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 20 records in 2 x div.layout-inner",
+    "changed": 20
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "attr_migration",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 20 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 20
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "decoy_injection",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 40 decoys on ['availability', 'price_color'] (plausible wrong values, ahead of the real node)",
+    "changed": 40
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 0.75,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "price": 0.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": true,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "content_deferred",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "content_deferred",
+    "severity": 2,
+    "detail": "blanked visible text in 20 records (60 nodes); structured data left intact",
+    "changed": 60
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 0.75,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "price": 0.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 0.75,
+  "field_f1": {
+   "title": 1.0,
+   "price": 0.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "jsonld_drop",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "jsonld_drop",
+    "severity": 2,
+    "detail": "removed 0 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 0
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": true
+ },
+ {
+  "site": "books",
+  "recipe": "record_reorder",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "record_reorder",
+    "severity": 2,
+    "detail": "reordered 20 records in the DOM",
+    "changed": 20
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 1.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "redesign",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (product_pod, product_price, price_color, instock...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 20 records in 2 x div.layout-inner",
+    "changed": 20
+   },
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 20 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 20
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 0.75,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 0.0,
+   "url": 1.0
+  },
+  "avg_fill": 0.75,
+  "field_f1": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 0.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "price"
+  ],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "redesign+decoy",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (product_pod, product_price, price_color, instock...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 20 records in 2 x div.layout-inner",
+    "changed": 20
+   },
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 40 decoys on ['css-94zjoj7', 'css-0ovbrku'] (plausible wrong values, ahead of the real node)",
+    "changed": 40
+   }
+  ],
+  "n_pred": 20,
+  "n_truth": 20,
+  "macro_f1": 0.525,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "price": 1.0,
+   "availability": 0.0,
+   "url": 1.0
+  },
+  "avg_fill": 0.75,
+  "field_f1": {
+   "title": 1.0,
+   "price": 0.1,
+   "availability": 0.0,
+   "url": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "price"
+  ],
+  "noop": false
+ },
+ {
+  "site": "books",
+  "recipe": "full_rewrite",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 3,
+    "detail": "renamed 25 class tokens -> hashed (product_pod, product_price, price_color, instock...)",
+    "changed": 25
+   },
+   {
+    "name": "reparent",
+    "severity": 3,
+    "detail": "wrapped children of 20 records in 3 x div.layout-inner",
+    "changed": 20
+   },
+   {
+    "name": "jsonld_drop",
+    "severity": 3,
+    "detail": "removed 0 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 0
+   },
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 100 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 100
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 20,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "price": 0.0,
+   "availability": 0.0,
+   "url": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "title": 0.0,
+   "price": 0.0,
+   "availability": 0.0,
+   "url": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "clean",
+  "seed": 3,
+  "severity": 0,
+  "mutations": [],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "class_rename",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (text, author, tags, tag...)",
+    "changed": 8
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "author",
+   "tags",
+   "text"
+  ],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "tag_swap",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 2 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 2
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "reparent",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 10 records in 2 x div.layout-inner",
+    "changed": 10
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "attr_migration",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 30 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 30
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "decoy_injection",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 20 decoys on ['tags', 'text'] (plausible wrong values, ahead of the real node)",
+    "changed": 20
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 0.6667,
+  "record_em": 0.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 0.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": true,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "content_deferred",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "content_deferred",
+    "severity": 2,
+    "detail": "blanked visible text in 10 records (80 nodes); structured data left intact",
+    "changed": 80
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 0.3333,
+  "record_em": 0.0,
+  "fill": {
+   "text": 0.0,
+   "author": 0.0,
+   "tags": 1.0
+  },
+  "avg_fill": 0.333,
+  "field_f1": {
+   "text": 0.0,
+   "author": 0.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "jsonld_drop",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "jsonld_drop",
+    "severity": 2,
+    "detail": "removed 50 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 50
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "record_reorder",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "record_reorder",
+    "severity": 2,
+    "detail": "reordered 10 records in the DOM",
+    "changed": 10
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "redesign",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (text, author, tags, tag...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 10 records in 2 x div.layout-inner",
+    "changed": 10
+   },
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 30 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 30
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "text": 0.0,
+   "author": 1.0,
+   "tags": 0.0
+  },
+  "avg_fill": 0.333,
+  "field_f1": {
+   "text": 0.0,
+   "author": 0.0,
+   "tags": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "author"
+  ],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "redesign+decoy",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (text, author, tags, tag...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 10 records in 2 x div.layout-inner",
+    "changed": 10
+   },
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 20 decoys on ['css-94zjoj7', 'css-4q9om48'] (plausible wrong values, ahead of the real node)",
+    "changed": 20
+   }
+  ],
+  "n_pred": 10,
+  "n_truth": 10,
+  "macro_f1": 0.6667,
+  "record_em": 0.0,
+  "fill": {
+   "text": 1.0,
+   "author": 1.0,
+   "tags": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "text": 1.0,
+   "author": 0.0,
+   "tags": 1.0
+  },
+  "silent": true,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "author",
+   "tags",
+   "text"
+  ],
+  "noop": false
+ },
+ {
+  "site": "quotes",
+  "recipe": "full_rewrite",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 3,
+    "detail": "renamed 12 class tokens -> hashed (text, author, tags, tag...)",
+    "changed": 12
+   },
+   {
+    "name": "reparent",
+    "severity": 3,
+    "detail": "wrapped children of 10 records in 3 x div.layout-inner",
+    "changed": 10
+   },
+   {
+    "name": "jsonld_drop",
+    "severity": 3,
+    "detail": "removed 50 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 50
+   },
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 2 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 2
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 10,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "text": 0.0,
+   "author": 0.0,
+   "tags": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "text": 0.0,
+   "author": 0.0,
+   "tags": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "clean",
+  "seed": 3,
+  "severity": 0,
+  "mutations": [],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "class_rename",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (cite-bracket, mw-ref, reference, mw-reflink-text...)",
+    "changed": 8
+   }
+  ],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "tag_swap",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 566 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 566
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 39,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "reparent",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 39 records in 2 x div.layout-inner",
+    "changed": 39
+   }
+  ],
+  "n_pred": 41,
+  "n_truth": 39,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "city": 0.049,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "avg_fill": 0.016,
+  "field_f1": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "city"
+  ],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "attr_migration",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 448 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 448
+   }
+  ],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "decoy_injection",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "no per-record field class found; no-op",
+    "changed": 0
+   }
+  ],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": true
+ },
+ {
+  "site": "wikitable",
+  "recipe": "content_deferred",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "content_deferred",
+    "severity": 2,
+    "detail": "blanked visible text in 39 records (639 nodes); structured data left intact",
+    "changed": 639
+   }
+  ],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 0.3333,
+  "record_em": 0.0,
+  "fill": {
+   "city": 0.0,
+   "country": 1.0,
+   "population": 0.0
+  },
+  "avg_fill": 0.333,
+  "field_f1": {
+   "city": 0.0,
+   "country": 1.0,
+   "population": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "jsonld_drop",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "jsonld_drop",
+    "severity": 2,
+    "detail": "removed 0 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 0
+   }
+  ],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": true
+ },
+ {
+  "site": "wikitable",
+  "recipe": "record_reorder",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "record_reorder",
+    "severity": 2,
+    "detail": "reordered 39 records in the DOM",
+    "changed": 39
+   }
+  ],
+  "n_pred": 39,
+  "n_truth": 39,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "city": 1.0,
+   "country": 1.0,
+   "population": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "redesign",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (cite-bracket, mw-ref, reference, mw-reflink-text...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 39 records in 2 x div.layout-inner",
+    "changed": 39
+   },
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 448 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 448
+   }
+  ],
+  "n_pred": 41,
+  "n_truth": 39,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "city": 0.049,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "avg_fill": 0.016,
+  "field_f1": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "city"
+  ],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "redesign+decoy",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (cite-bracket, mw-ref, reference, mw-reflink-text...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 39 records in 2 x div.layout-inner",
+    "changed": 39
+   },
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "no per-record field class found; no-op",
+    "changed": 0
+   }
+  ],
+  "n_pred": 41,
+  "n_truth": 39,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "city": 0.049,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "avg_fill": 0.016,
+  "field_f1": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "city"
+  ],
+  "noop": false
+ },
+ {
+  "site": "wikitable",
+  "recipe": "full_rewrite",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 3,
+    "detail": "renamed 12 class tokens -> hashed (cite-bracket, mw-ref, reference, mw-reflink-text...)",
+    "changed": 12
+   },
+   {
+    "name": "reparent",
+    "severity": 3,
+    "detail": "wrapped children of 39 records in 3 x div.layout-inner",
+    "changed": 39
+   },
+   {
+    "name": "jsonld_drop",
+    "severity": 3,
+    "detail": "removed 0 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 0
+   },
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 566 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 566
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 39,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "city": 0.0,
+   "country": 0.0,
+   "population": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "clean",
+  "seed": 3,
+  "severity": 0,
+  "mutations": [],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "class_rename",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 7 class tokens -> hashed (product-title, product-meta, product-price, product-rating...)",
+    "changed": 7
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "name",
+   "price",
+   "rating",
+   "stock"
+  ],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "tag_swap",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 24 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 24
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 24,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "sku": 0.0,
+   "name": 0.0,
+   "price": 0.0,
+   "rating": 0.0,
+   "stock": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "sku": 0.0,
+   "name": 0.0,
+   "price": 0.0,
+   "rating": 0.0,
+   "stock": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "reparent",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 24 records in 2 x div.layout-inner",
+    "changed": 24
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "attr_migration",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 48 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 48
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "rating",
+   "sku"
+  ],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "decoy_injection",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 48 decoys on ['product-meta', 'product-rating'] (plausible wrong values, ahead of the real node)",
+    "changed": 48
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 0.8,
+  "record_em": 0.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 0.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": true,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "content_deferred",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "content_deferred",
+    "severity": 2,
+    "detail": "blanked visible text in 24 records (96 nodes); structured data left intact",
+    "changed": 96
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "name",
+   "price",
+   "stock"
+  ],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "jsonld_drop",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "jsonld_drop",
+    "severity": 2,
+    "detail": "removed 1 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 1
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "record_reorder",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "record_reorder",
+    "severity": 2,
+    "detail": "reordered 24 records in the DOM",
+    "changed": 24
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "redesign",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 7 class tokens -> hashed (product-title, product-meta, product-price, product-rating...)",
+    "changed": 7
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 24 records in 2 x div.layout-inner",
+    "changed": 24
+   },
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 48 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 48
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "name",
+   "price",
+   "rating",
+   "sku",
+   "stock"
+  ],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "redesign+decoy",
+  "seed": 3,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 7 class tokens -> hashed (product-title, product-meta, product-price, product-rating...)",
+    "changed": 7
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 24 records in 2 x div.layout-inner",
+    "changed": 24
+   },
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 48 decoys on ['css-94zjoj7', 'css-4q9om48'] (plausible wrong values, ahead of the real node)",
+    "changed": 48
+   }
+  ],
+  "n_pred": 24,
+  "n_truth": 24,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "sku": 1.0,
+   "name": 1.0,
+   "price": 1.0,
+   "rating": 1.0,
+   "stock": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier1>",
+   "name",
+   "price",
+   "rating",
+   "stock"
+  ],
+  "noop": false
+ },
+ {
+  "site": "shop",
+  "recipe": "full_rewrite",
+  "seed": 3,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 3,
+    "detail": "renamed 7 class tokens -> hashed (product-title, product-meta, product-price, product-rating...)",
+    "changed": 7
+   },
+   {
+    "name": "reparent",
+    "severity": 3,
+    "detail": "wrapped children of 24 records in 3 x div.layout-inner",
+    "changed": 24
+   },
+   {
+    "name": "jsonld_drop",
+    "severity": 3,
+    "detail": "removed 1 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 1
+   },
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 24 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 24
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 24,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "sku": 0.0,
+   "name": 0.0,
+   "price": 0.0,
+   "rating": 0.0,
+   "stock": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "sku": 0.0,
+   "name": 0.0,
+   "price": 0.0,
+   "rating": 0.0,
+   "stock": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ }
+]

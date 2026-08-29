@@ -1,0 +1,1 @@
+synthetic fixture (SSR product grid with JSON-LD + microdata-style attrs)

@@ -1,0 +1,165 @@
+{
+  "site": "wikitable",
+  "version": 1,
+  "parent": null,
+  "record_selector": [
+    {
+      "kind": "xpath",
+      "q": "//table[contains(@class,\"wikitable\")]//tr[td]",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    },
+    {
+      "kind": "css",
+      "q": "table.wikitable tr",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    }
+  ],
+  "fields": {
+    "city": {
+      "stack": [
+        {
+          "kind": "xpath",
+          "q": "./th//a",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "xpath",
+          "q": "./th",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "structural",
+          "q": "./th[1]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 60
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "country": {
+      "stack": [
+        {
+          "kind": "xpath",
+          "q": "./td[1]//a[@title]",
+          "rel": null,
+          "attr": "title",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "xpath",
+          "q": "./td[1]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "structural",
+          "q": "./td[1]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 60
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "population": {
+      "stack": [
+        {
+          "kind": "xpath",
+          "q": "./td[2]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "structural",
+          "q": "./td[2]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "money",
+      "validators": [
+        {
+          "type": "number",
+          "min": 100000.0,
+          "max": 100000000.0,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    }
+  },
+  "created_by": "human",
+  "note": null
+}

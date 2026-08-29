@@ -1,0 +1,156 @@
+{
+  "site": "quotes",
+  "version": 1,
+  "parent": null,
+  "record_selector": [
+    {
+      "kind": "css",
+      "q": "div.quote",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    },
+    {
+      "kind": "xpath",
+      "q": "//div[@itemtype=\"http://schema.org/CreativeWork\"]",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    }
+  ],
+  "fields": {
+    "text": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "span.text",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "xpath",
+          "q": ".//*[@itemprop=\"text\"]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 600
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "author": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "small.author",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "xpath",
+          "q": ".//*[@itemprop=\"author\"]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "text_anchor",
+          "q": "by",
+          "rel": "next_sibling_text",
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 80
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "tags": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "meta.keywords",
+          "rel": null,
+          "attr": "content",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "xpath",
+          "q": ".//*[@itemprop=\"keywords\"]",
+          "rel": null,
+          "attr": "content",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    }
+  },
+  "created_by": "human",
+  "note": null
+}

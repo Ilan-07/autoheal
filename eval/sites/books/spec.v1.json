@@ -1,0 +1,191 @@
+{
+  "site": "books",
+  "version": 1,
+  "parent": null,
+  "record_selector": [
+    {
+      "kind": "css",
+      "q": "article.product_pod",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    },
+    {
+      "kind": "xpath",
+      "q": "//section//ol/li//article",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    }
+  ],
+  "fields": {
+    "title": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "h3 > a",
+          "rel": null,
+          "attr": "title",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "h3 a",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "structural",
+          "q": "./h3/a",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 200
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "price": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "p.price_color",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": ".product_price .price_color",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "regex",
+          "q": "[\u00a3$]\\s*(\\d+\\.\\d{2})",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "money",
+      "validators": [
+        {
+          "type": "number",
+          "min": 0.5,
+          "max": 500.0,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "availability": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "p.instock.availability",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": ".product_price p.instock",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "url": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "h3 > a",
+          "rel": null,
+          "attr": "href",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "div.image_container a",
+          "rel": null,
+          "attr": "href",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "url",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    }
+  },
+  "created_by": "human",
+  "note": null
+}
