@@ -1,5 +1,7 @@
 # Autoheal — self-healing web extraction
 
+[![ci](https://github.com/Ilan-07/autoheal/actions/workflows/ci.yml/badge.svg)](https://github.com/Ilan-07/autoheal/actions/workflows/ci.yml)
+
 Scrapers don't fail loudly. A site redesigns, selectors match the wrong node, and the pipeline
 writes plausible garbage for three weeks. Autoheal's job isn't extraction — it's **repair**:
 
@@ -20,15 +22,22 @@ The rule for this build is that nothing agent-shaped gets written until breakage
 | `eval/metrics.py` — alignment-free multiset P/R/F1 | ✅ |
 | `eval/harness.py` — B0 static baseline over 4 sites × 11 recipes | ✅ |
 | `eval/verify_truth.py` — independent ground-truth checks | ✅ |
+| `eval/check_baseline.py` — baseline drift lockfile | ✅ |
 | `tests/` — 93 tests | ✅ |
+| CI — verify · test · hash-seed reproducibility · drift | ✅ |
 | `perceive · diff · localize · diagnose · patch · verify · memory` | ⬜ next |
 
 ```
 make verify  # independent ground-truth checks
 make test    # 93 tests
+make check   # fail if the committed baseline no longer reproduces
 make eval    # B0 static baseline
-make all     # all three
+make all     # all four
 ```
+
+CI runs the same four on every push, plus the whole eval under three different
+`PYTHONHASHSEED` values — the numbers below are only meaningful if they reproduce,
+and that was not true until the stage-1 audit.
 
 ## B0 static baseline (seeds 0–3)
 
