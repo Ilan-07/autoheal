@@ -472,7 +472,10 @@ for hs in 0 1 12345; do PYTHONHASHSEED=$hs uv run python -m eval.heal_eval --see
 diff /tmp/hs0/seed0/heal.json /tmp/hs12345/seed0/heal.json && echo identical
 ```
 
-CI runs exactly this for all four harnesses on every push.
+CI runs exactly this on every push for `harness`, `heal_eval` and `perceive_eval`. `ablations`
+is verified the same way but locally: it is seven calls to the same `run_matrix` that `heal_eval`
+already drives under all three seeds, so re-checking it in CI proved nothing new and cost about
+four minutes per seed.
 
 ---
 
