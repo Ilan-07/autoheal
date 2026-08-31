@@ -284,6 +284,20 @@ def _anchor_value(node, rel: str | None) -> str | None:
     return None
 
 
+def is_element(root: Any) -> bool:
+    """Is this record root a DOM node, or a JSON-LD object?
+
+    When the record selector falls through to its `jsonld` tier the roots are
+    plain dicts, and only `jsonld` field locators can address anything inside
+    them. That is the whole point of the tier -- it is the recovery path for a
+    page whose visible markup went away -- but every css/xpath/regex locator in
+    the stack then has nothing to resolve against. Treating that as a miss lets
+    the stack keep walking; before this guard it raised
+    `AttributeError: 'dict' object has no attribute 'cssselect'` and took the
+    whole extraction down."""
+    return hasattr(root, "cssselect")
+
+
 def resolve_all(loc: Locator, root: Any, ctx: Context) -> list[str]:
     """Every non-empty string this locator finds under `root`, in document order.
 
@@ -292,6 +306,8 @@ def resolve_all(loc: Locator, root: Any, ctx: Context) -> list[str]:
     per record yesterday and matches two today is the signature of an injected
     decoy, and it is invisible to anything that only looks at the value.
     """
+    if loc.kind != "jsonld" and not is_element(root):
+        return []  # a JSON-LD root is not addressable by a DOM locator
     try:
         if loc.kind == "jsonld":
             if not (0 <= ctx.root_index < len(ctx.jsonld)):

@@ -30,16 +30,16 @@ Stage 1 built the ruler; stage 2 built the loop and is scored by it.
 | `autoheal/loop.py` — the orchestrator, with quarantine | ✅ |
 | `eval/` — B0 baseline, perceive eval, end-to-end heal eval, 2 drift lockfiles | ✅ |
 | `eval/ablations.py` — −memory · −regression · −diff · −stack · −known-good | ✅ |
-| `tests/` — 303 tests: hostile inputs, eval arithmetic, drift-checker failure, demo artefact | ✅ |
+| `tests/` — 375 tests over a six-site corpus | ✅ |
 | CI — verify · test · hash-seed reproducibility · 2 drift gates · detection/FPR gate | ✅ |
 | `eval/b1_oneshot.py` — one-shot baseline vs. the loop | ✅ |
 | `autoheal/diagnose.py` — Anthropic **and** Ollama providers, schema-constrained | ✅ |
 | `demo/record.py` · `demo/replay.html` — offline, self-contained replay | ✅ |
-| recorded video · corpus beyond 4 sites | ⬜ next |
+| recorded video | ⬜ next |
 
 ```
 make verify      # independent ground-truth checks
-make test        # 303 tests
+make test        # 375 tests
 make check       # fail if the committed B0 baseline no longer reproduces
 make perceive    # detection rate vs false-alarm rate (non-zero exit on either)
 make heal        # end-to-end recovery, ranker accuracy, memory ablation
@@ -63,19 +63,21 @@ actually goes*). Spread is real across-seed variance.
 
 | | |
 |---|---|
-| genuinely degraded cases detected | **41/41** (1.00) |
-| silent failures caught (≥90% fill, <90% F1) | **14/14** (1.00) |
-| false alarms on clean + content-churned pages | **0/32** (0.00) — at warn level too |
+| genuinely degraded cases detected | **122/122** (1.00) |
+| silent failures caught (≥90% fill, <90% F1) | **26/26** (1.00) |
+| false alarms on clean + content-churned pages | **0/48** (0.00) — at warn level too |
 
 **Repair — does the loop heal?**
 
 | | B0 static | Autoheal |
 |---|---|---|
-| recovery rate on cases needing repair | 0.00 *by construction* | **0.80 – 0.86** |
-| mean F1 after breakage | 0.271 – 0.312 | **0.904 – 0.924** |
+| recovery rate on cases needing repair | 0.00 *by construction* | **0.83 – 0.87** |
+| mean F1 after breakage | 0.289 – 0.312 | **0.902 – 0.916** |
 | mean cycles-to-recover | n/a | **1.00** (cap 4) |
-| honest quarantines | n/a | 0.14 – 0.20 |
+| honest quarantines | n/a | 0.13 – 0.17 |
 | healthy cases damaged by the loop | n/a | **0** |
+
+Over **30–31 cases needing repair per seed**, on a corpus of six sites.
 
 Every quarantine across all four seeds is a `content_deferred` case on a page that ships
 no structured data — the values genuinely are not in the DOM any more. Refusing is the
@@ -86,8 +88,8 @@ inventing a locator.
 
 | | |
 |---|---|
-| top-1: a fully-recovering locator is the ranker's first choice | **0.75 – 0.76** |
-| top-3 | 0.78 – 0.80 |
+| top-1: a fully-recovering locator is the ranker's first choice | **0.80 – 0.81** |
+| top-3 | 0.82 – 0.83 |
 
 Top-1 and top-3 nearly coincide by construction — recovery dominates the score, so a
 fully-recovering candidate sorts to rank 0. The number that carries information is
@@ -99,48 +101,70 @@ seed-dependent order so a trend cannot be an ordering artefact.
 
 | recall scope | model calls needed | reduction | recovery |
 |---|---|---|---|
-| any prior episode | **22 – 29** | **31% – 49%** | 0.80 – 0.86 |
-| *different site only* (transfer) | 35 | **19%** | 0.85 |
-| memory ablated | 42 – 44 | — | 0.80 – 0.86 |
+| any prior episode | **21 – 47** | **28% – 68%** | 0.83 – 0.87 |
+| *different site only* (transfer) | 27 | **58%** | 0.87 |
+| memory ablated | 65 – 71 | — | 0.83 – 0.87 |
 
-Two honest readings. Memory does not make the loop more *accurate* — recovery is identical
-in every arm — it makes it *cheaper*. And most of that saving is a site breaking the same
-way twice, not a lesson moving between sites: isolate cross-site recall and the saving
-falls from ~49% to 19%. Transfer is real, and it is the smaller half. Episodes are keyed on
-a *strategy class* (`structured_data`, `semantic_attr`, `exclusion`, `positional`, …) rather
-than a concrete locator kind specifically to make transfer possible; keying on the kind
-scored 12%. Part of the residual gap is not fixable by tuning — `books` ships no structured
-data, so it genuinely cannot reuse `shop`'s winning strategy.
+Memory does not make the loop more *accurate* — recovery is identical in every arm — it
+makes it *cheaper*. Episodes are keyed on a **strategy class** (`structured_data`,
+`semantic_attr`, `exclusion`, `positional`, …) rather than a concrete locator kind, so that
+a lesson can move between sites at all; keying on the kind scored 12%.
+
+**This is the number that changed most when the corpus grew, and the direction is worth
+being explicit about.** At four sites, cross-site transfer was 19% against 49% for
+unrestricted recall — transfer was real but the smaller half, and the README said so. At
+six sites it is **58% against 68%: transfer now accounts for most of the saving.** The cause
+is not tuning. At four sites only one site shipped structured data, so a `structured_data`
+episode had nowhere to transfer to; `jobs` gave it a second. The earlier number was
+measuring a corpus limitation and reporting it as a property of the method.
+
+The eval used to print that conclusion as a hardcoded sentence, which stayed "the smaller
+half" while the numbers said otherwise. It is now derived from the measurement, because a
+conclusion baked into a print statement is a claim nothing can falsify. The run-to-run
+spread (24%–65%) is wide and honestly reported: how much memory saves depends heavily on
+the order sites happen to break in.
 
 ## B1 — the one-shot baseline
 
-`make b1`. Same 20 cases, same three gates, same frozen truth. The only difference is
+`make b1`. Same 30 cases, same three gates, same frozen truth. The only difference is
 what the model receives: B1 gets the raw broken page, Autoheal gets ~8 candidates that
 have each already been executed against every record on it. Both ran on
 `gpt-oss:120b-cloud`.
 
-| | B0 static | B1 one-shot | **Autoheal** | Autoheal +model |
-|---|---|---|---|---|
-| recovery | 0.00 | 0.60 | **0.85** | 0.85 |
-| mean F1 after repair | 0.27 | 0.774 | **0.920** | 0.913 |
-| tokens, 20 cases | 0 | **500,039** | **0** | 43,587 |
-| locators that fail the pre-break page | — | **16/72 (22%)** | 0 | 0 |
+| | B0 static | B1 one-shot | **Autoheal** |
+|---|---|---|---|
+| recovery, 30 cases | 0.00 | 0.63 | **0.87** |
+| mean F1 after repair | 0.29 | 0.795 | **0.914** |
+| tokens | 0 | **589,329** | **0** |
+| locators that fail the pre-break page | — | **34/112 (30%)** | **0** |
 
-B1 is not reproducible and it does swing: two runs of the identical configuration
-gave recovery 0.55 / F1 0.840 and 0.60 / 0.774. Autoheal's column is byte-identical
-across runs and across three `PYTHONHASHSEED` values, which is the asymmetry the
-whole design is arguing for.
+**The difference is statistically significant.** Exact McNemar over the 30 paired
+cases: autoheal wins 7 that B1 loses, B1 wins 0 that autoheal loses, **p = 0.0156**.
+Wilson 95% CIs are 0.70–0.95 and 0.46–0.78.
+
+That took two goes to establish honestly. At four sites the result was 5–0
+discordant, p = 0.0625 — *not* significant, and with only five discordant pairs
+0.0625 is the smallest p-value arithmetically reachable, so it could not have been.
+Expanding the corpus first made it **worse** (p = 0.18): B1 won two cases the
+smaller sample had hidden. Those two cases were autoheal bugs, not noise — an
+ancestor-marked decoy and a whole class of candidates that string matching missed.
+Fixing them is what produced 7–0. The corpus earned its place by finding bugs, not
+by adding sample size.
+
+B1 is not reproducible and it swings: runs of the identical configuration gave
+0.55 / 0.60 / 0.63 recovery. Autoheal's column is byte-identical across runs and
+across three `PYTHONHASHSEED` values, which is the asymmetry the design argues for.
 
 **The durability gap is the result, not the recovery gap.** B1's chosen addressing styles
-were `positional 22 · hashed_class 20 · stable_class 12 · semantic_attr 8 · exclusion 5 ·
-bare_tag 4 · regex_shape 1` — **58% positional paths or hashed CSS-in-JS classes**, the two
+were `hashed_class 35 · stable_class 22 · positional 21 · exclusion 16 · semantic_attr 11 ·
+bare_tag 5 · regex_shape 2` — **50% positional paths or hashed CSS-in-JS classes**, the two
 least durable styles, the ones `prior()` ranks last. It repeatedly reached for the hashed class the
 mutation had just minted: perfect today, worthless at the next deploy. That is what the
 28% pre-break-page failure rate measures.
 
 This also rescues the `−regression` null result below. G2 rejects nothing when it is
 grading our own ranker, because the ranker does not propose overfits. Against B1 it has
-**16 to catch**. The gate is not redundant; our ranker just made it look that way.
+**34 to catch**. The gate is not redundant; our ranker just made it look that way.
 
 **B1 was corrected twice, both times in its favour.** The first run scored it at 0.10
 because the harness never offered it the record selector — five cases had F1 1.00, G1 pass,
@@ -150,7 +174,7 @@ errors at 0 tokens. Both were our bugs. A baseline that has not been attacked fo
 unfairness is not a baseline.
 
 **The model step is not currently earning its keep either.** Turning the LLM on inside
-Autoheal left recovery unchanged at 0.85 and moved mean F1 from 0.920 to 0.913 — no
+Autoheal left recovery unchanged and moved mean F1 by less than a point — no
 measurable gain for 43,587 tokens. On this corpus the deterministic ranker does the work.
 That is a claim in the project's favour, not against it: the headline number does not
 depend on a model, and we can show it.
@@ -161,19 +185,19 @@ depend on a model, and we can show it.
 
 | arm | recovery | F1 after | quarantined | model calls |
 |---|---|---|---|---|
-| full | **0.85** | 0.920 | 0.15 | 22 |
-| −memory | 0.85 | 0.920 | 0.15 | 43 |
-| −memory (cross-site only) | 0.85 | 0.920 | 0.15 | 35 |
-| −regression | 0.85 | 0.920 | 0.15 | 30 |
-| −diff | 0.85 | 0.920 | 0.15 | 22 |
-| −stack | 0.85 | 0.916 | 0.15 | 19 |
-| **−known-good** | **0.15** | **0.383** | **0.85** | 179 |
+| full | **0.87** | 0.914 | 0.13 | 21 |
+| −memory | 0.87 | 0.914 | 0.13 | 65 |
+| −memory (cross-site only) | 0.87 | 0.914 | 0.13 | 27 |
+| −regression | 0.87 | 0.914 | 0.13 | 29 |
+| −diff | 0.87 | 0.914 | 0.13 | 21 |
+| −stack | 0.85 | 0.900 | 0.15 | 24 |
+| **−known-good** | **0.13** | **0.396** | **0.87** | 322 |
 
 **−known-good is the one that moves recovery, and it moves it a long way.** This is Bet 3
 tested causally rather than asserted: withhold the last-known-good values and candidates
 must be enumerated from every text-bearing node in the record instead of the ~3 carrying a
-value we already know, with `recovery` dropped from the ranking. Recovery falls 0.85 → 0.15,
-F1 0.920 → 0.383, and 85% of cases quarantine. The 3 that still heal are the ones where a
+value we already know, with `recovery` dropped from the ranking. Recovery falls 0.87 → 0.13,
+F1 0.914 → 0.396, and 87% of cases quarantine. The 4 that still heal are the ones where a
 fallback already in the spec happens to be right — which needs no supervision at all.
 
 It is also the arm that took three attempts to make honest. Withholding the values from
@@ -189,8 +213,8 @@ information asymmetry that makes the model's job small, not a model's accuracy a
 HTML. B1 still wants a real run.
 
 **−stack quantifies the free-degradation claim.** Removing the fallback tiers doesn't make
-repairs worse — it makes 6 more breakages *need* one. That is the locator stack's actual
-value: fewer repairs, not better ones.
+repairs much worse — it makes **10 more breakages need a repair at all** (40 cases instead
+of 30). That is the locator stack's actual value: fewer repairs needed, not better ones.
 
 **−regression is a null result and is published as one.** Removing old-page compatibility
 from *both* the ranking term and the G2 gate produces zero overfits. The reason is
@@ -216,10 +240,10 @@ not run-to-run noise.
 | | |
 |---|---|
 | clean pages, mean F1 | **1.000** — no false breakage |
-| after breakage, mean F1 | **0.645** (0.642–0.648) over 41 live cases |
-| cases needing real repair | **20–21 / 41** |
-| absorbed free by the locator stack | 6–7 / 41 |
-| silent failures (≥90% fill, <90% F1) | 3–4 |
+| after breakage, mean F1 | **0.650** over 61 live cases |
+| cases needing real repair | **30–31 / 61** |
+| absorbed free by the locator stack | 10 / 61 |
+| silent failures (≥90% fill, <90% F1) | 6–7 |
 | recovery | **0.00** — a static scraper cannot repair itself |
 
 ## Design commitments
@@ -231,7 +255,7 @@ diffable, and no model output is ever executed — transforms come from a whitel
 
 **Each field is a stack of locators, not one selector.** `price` is
 `[css, jsonld, regex, structural]`; first value that survives validation wins, and the winning
-tier is recorded. Two consequences: some breakages heal at zero cost (6/42 above), and a
+tier is recorded. Two consequences: some breakages heal at zero cost (10/61 above), and a
 **tier shift is a leading indicator of silent breakage** — it fires even when the value still
 looks fine.
 
@@ -399,6 +423,13 @@ checks all four rather than the two it checked before.
 | `quotes` | quotes.toscrape.com (scraping sandbox), frozen | 10 |
 | `wikitable` | real `wikitable` markup from Wikipedia, extracted verbatim | 39 |
 | `shop` | synthetic SSR product grid with JSON-LD (`eval/sites/shop/generate.py`) | 24 |
+| `hn` | synthetic link-aggregator listing — **no structured data at all** | 30 |
+| `jobs` | synthetic job board with JSON-LD, microdata and a definition list | 18 |
+
+`hn` is the hostile case: no schema.org tier to fall back on, values embedded in prose
+("91 points"), and nav chrome reusing the record classes. `jobs` is the only site with a
+**date** field — `t_iso_date` had no corpus coverage at all, which is how a transform that
+accepted `2024-13-45` as valid survived until the hardening pass.
 
 Ground truth is v1 output on the clean page, frozen to `truth.json`. Everything is offline and
 seeded; `make eval` is reproducible with no network.

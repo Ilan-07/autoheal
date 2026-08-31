@@ -247,3 +247,37 @@ def test_a_transform_that_raises_is_a_miss_and_falls_through():
         assert extract(s, "<div class='r'><b>1.00</b></div>").records[0].fields["v"].value is None
     finally:
         TRANSFORMS["money"] = original
+
+
+def test_a_jsonld_record_root_is_not_addressable_by_dom_locators():
+    """Regression: when the record selector falls through to its jsonld tier the
+    roots are plain dicts, and every css/xpath locator in the field stacks was
+    calling `.cssselect()` on one -- `AttributeError`, whole extraction down.
+
+    Found the day `jobs` entered the corpus, by `tag_swap` at severity 3. A DOM
+    locator against a JSON object is a miss, so the stack walks on to the jsonld
+    entry and the page is recovered entirely from structured data."""
+    html = ("<html><head><script type='application/ld+json'>"
+            '[{"@type":"Product","name":"A","price":"1.50"},'
+            '{"@type":"Product","name":"B","price":"2.50"}]'
+            "</script></head><body><p>markup is gone</p></body></html>")
+    s = ExtractorSpec(
+        site="t",
+        record_selector=[Locator(kind="css", q="article.gone"), Locator(kind="jsonld", q="auto")],
+        fields={"v": FieldSpec(stack=[
+            Locator(kind="css", q="h3.title"),          # cannot resolve against a dict
+            Locator(kind="xpath", q=".//span"),         # nor this
+            Locator(kind="regex", q=r"(\d+)"),          # nor this
+            Locator(kind="jsonld", q="name")])})        # this one can
+    run = extract(s, html)
+    assert run.root_tier == 1 and len(run.records) == 2
+    assert [r.fields["v"].value for r in run.records] == ["A", "B"]
+    assert all(r.fields["v"].tier == 3 for r in run.records), "should be served by the jsonld tier"
+
+
+def test_is_element_distinguishes_dom_nodes_from_jsonld_objects():
+    from autoheal.runtime import Context, is_element
+    ctx = Context.build("<html><body><div>x</div></body></html>")
+    assert is_element(ctx.doc.cssselect("div")[0])
+    assert not is_element({"@type": "Product"})
+    assert not is_element(None)

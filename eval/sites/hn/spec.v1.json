@@ -1,0 +1,190 @@
+{
+  "site": "hn",
+  "version": 1,
+  "parent": null,
+  "record_selector": [
+    {
+      "kind": "css",
+      "q": "li.story",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    },
+    {
+      "kind": "css",
+      "q": "ol.itemlist > li",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    }
+  ],
+  "fields": {
+    "title": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "a.storylink",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": ".titleline a",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "structural",
+          "q": "./*[2]/*[1]/*[1]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 200
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "points": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "span.score",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "regex",
+          "q": "(\\d+)\\s+points",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "int",
+      "validators": [
+        {
+          "type": "number",
+          "min": 0.0,
+          "max": 100000.0,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "author": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "a.hnuser",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "text_anchor",
+          "q": "by",
+          "rel": "next_sibling_text",
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 40
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "comments": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "a.commentlink",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "regex",
+          "q": "(\\d+)\\s+comments",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "int",
+      "validators": [
+        {
+          "type": "number",
+          "min": 0.0,
+          "max": 100000.0,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    }
+  },
+  "created_by": "human",
+  "note": null
+}

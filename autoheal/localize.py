@@ -22,7 +22,7 @@ from lxml import html as lhtml
 from pydantic import BaseModel, Field
 
 from .runtime import (LOCATOR_ERRORS, TRANSFORM_ERRORS, TRANSFORMS, Context, check,
-                       resolve_all, t_text)
+                       is_element, resolve_all, t_text)
 from .spec import ExtractorSpec, FieldSpec, Locator
 
 _HASHED = re.compile(r"^(css-|sc-|jsx-|_)[a-z0-9]{4,}$|^[a-z]{1,3}[-_]?[0-9a-f]{6,}$")
@@ -353,9 +353,56 @@ def _disambiguated(q: str, node, root, attr: str | None) -> list[Locator]:
     for h in hits:
         if h is not node:
             extra |= set((h.get("class") or "").split()) - mine
-    return [Locator(kind="css", q=f"{q}:not(.{t})", attr=attr,
-                    note=f"excludes a shadowing node marked .{t}")
-            for t in sorted(extra)[:2]]
+    out = [Locator(kind="css", q=f"{q}:not(.{t})", attr=attr,
+                   note=f"excludes a shadowing node marked .{t}")
+           for t in sorted(extra)[:2]]
+    return out or _ancestor_scoped(q, node, root, attr, hits)
+
+
+def _ancestor_scoped(q: str, node, root, attr: str | None, hits: list) -> list[Locator]:
+    """Exclude an impostor that is marked on an *ancestor* rather than on itself.
+
+    When the decoy is cloned from a container -- a `div` wrapping a whole
+    metadata line, rather than the single value node inside it -- the marker
+    lands above the node we matched, so there is no class on the hits themselves
+    to exclude. The repair a human writes scopes through the container:
+    `div.<container>:not(.<marker>) span.<value>`. Both tokens are read off the
+    DOM; no marker name appears anywhere in this package, and a test asserts it.
+
+    This gap was documented as a known limitation and then found for real: the
+    one-shot baseline healed `hn/decoy_injection` with exactly this shape while
+    the loop quarantined it."""
+    def ancestors(el) -> list:
+        out, cur = [], el.getparent()
+        while cur is not None and cur is not root:
+            out.append(cur)
+            cur = cur.getparent()
+        return out
+
+    def classes_of(els) -> set[str]:
+        return {t for el in els for t in (el.get("class") or "").split()}
+
+    mine_anc = ancestors(node)
+    mine = classes_of(mine_anc)
+    theirs: set[str] = set()
+    for h in hits:
+        if h is not node:
+            theirs |= classes_of(ancestors(h))
+    marks = sorted(theirs - mine)
+    if not marks:
+        return []
+
+    out: list[Locator] = []
+    for anc in mine_anc:
+        shared = sorted(t for t in (anc.get("class") or "").split() if t in theirs)
+        if not shared:
+            continue
+        scope = f"{anc.tag}.{shared[0]}"
+        for t in marks[:2]:
+            out.append(Locator(kind="css", q=f"{scope}:not(.{t}) {q}", attr=attr,
+                               note=f"scopes through {scope}, excluding a container marked .{t}"))
+        break  # nearest qualifying ancestor only
+    return out[:2]
 
 
 def _blind_generate(roots: list) -> list[Locator]:
@@ -365,7 +412,7 @@ def _blind_generate(roots: list) -> list[Locator]:
     without them every text-bearing leaf and every value-shaped attribute is a
     candidate, and the ranker has only structural robustness to go on."""
     out: list[Locator] = []
-    for root in roots[:MAX_ROOTS_FOR_GENERATION]:
+    for root in (r for r in roots[:MAX_ROOTS_FOR_GENERATION] if is_element(r)):
         seen = 0
         for node in root.iter():
             if seen >= MAX_BLIND_NODES_PER_ROOT or len(out) >= MAX_BLIND_LOCATORS:
@@ -520,20 +567,40 @@ def candidates(
     cores = {_core(v) for v in known_good if v is not None}
     raw: list[Locator] = []
 
+    fn = TRANSFORMS.get(fspec.transform, t_text)
+
+    def carries(text: str) -> bool:
+        """Does this text hold one of the known-good values?
+
+        Comparing the *cored strings* alone was not enough. `points` renders as
+        "91 points" and the known-good value is 91, so the cored forms are
+        "91points" and "91" and nothing matched -- every field whose transform
+        *extracts* from its text rather than copying it generated zero
+        candidates and the page quarantined. Running the field's own transform
+        answers the question the way the runtime would."""
+        if not text:
+            return False
+        if _core(text) in cores:
+            return True
+        try:
+            return _key(fn(text)) in targets
+        except TRANSFORM_ERRORS:
+            return False
+
     if known_good_aware:
-        for root in roots[:MAX_ROOTS_FOR_GENERATION]:
+        # Only DOM roots can be walked for candidate nodes. JSON-LD roots still
+        # evaluate fine below, via the stack's own jsonld locators.
+        for root in (r for r in roots[:MAX_ROOTS_FOR_GENERATION] if is_element(r)):
             found = 0
             for node in root.iter():
                 if found >= MAX_HITS_PER_ROOT or not isinstance(node.tag, str):
                     continue
-                if len(node) == 0:
-                    txt = _core(node.text_content())
-                    if txt and txt in cores:
-                        raw += _generate(node, root, None)
-                        found += 1
-                        continue
+                if len(node) == 0 and carries(node.text_content()):
+                    raw += _generate(node, root, None)
+                    found += 1
+                    continue
                 for a, v in node.attrib.items():
-                    if a != "class" and _core(v) and _core(v) in cores:
+                    if a != "class" and carries(v):
                         raw += _generate(node, root, a)
                         found += 1
                         break

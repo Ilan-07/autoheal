@@ -17,6 +17,13 @@ from typing import Callable
 
 ROOT = pathlib.Path(__file__).resolve().parent
 
+# Derived from disk, not hardcoded. Two literal site tuples used to live in this
+# file; adding a site meant remembering to edit both, and forgetting would have
+# silently left the new corpus unverified while the run still printed "all
+# ground truth verified".
+SITE_DIRS = sorted(d.name for d in (ROOT / "sites").iterdir()
+                   if d.is_dir() and (d / "truth.json").exists())
+
 
 def raw(site: str) -> str:
     return (ROOT / "sites" / site / "page.html").read_text()
@@ -74,7 +81,7 @@ def not_constant(rows, html, site=""):
     return not bad, f"fields constant across all records: {bad}"
 
 
-for _s in ("books", "quotes", "wikitable", "shop"):
+for _s in SITE_DIRS:
     for _fn in (complete, not_page_title, not_constant):
         CHECKS.setdefault(_s, []).append(_fn)
 
@@ -132,6 +139,91 @@ def shop_skus_unique_and_well_formed(rows, html):
     return ok, f"{len(set(s))} unique skus of {len(s)}"
 
 
+GENERIC = {"complete", "not_page_title", "not_constant"}
+
+
+def specific_checks(site: str) -> list[str]:
+    return [fn.__name__ for fn in CHECKS.get(site, []) if fn.__name__ not in GENERIC]
+
+
+
+# --- hn: no structured data, so every check is raw-text or an invariant ----
+
+@check("hn")
+def hn_points_match_raw_text(rows, html):
+    """The footer also carries `<span class="score">0 points</span>`, so the raw
+    list is one longer than the record list -- the stories are the leading 30."""
+    found = [int(x) for x in re.findall(r"(\d+) points", html)]
+    return found[:len(rows)] == _col(rows, "points"), \
+        f"raw point values {found[:3]}... vs truth {_col(rows, 'points')[:3]}..."
+
+
+@check("hn")
+def hn_comments_match_raw_text(rows, html):
+    found = [int(x) for x in re.findall(r"(\d+) comments", html)]
+    return found == _col(rows, "comments"), f"raw {len(found)} comment counts vs {len(rows)} records"
+
+
+@check("hn")
+def hn_authors_come_from_user_links(rows, html):
+    """The nav bar reuses `.hnuser` but its links carry no `id=`, so this also
+    catches an extractor that wandered outside the record root."""
+    found = re.findall(r"/user\?id=([a-z_]+)", html)
+    return found == _col(rows, "author"), f"raw {len(found)} user links vs {len(rows)} records"
+
+
+@check("hn")
+def hn_titles_are_not_nav_labels(rows, html):
+    nav = {"new", "past", "ask", "More", "Hacker Digest", "hide"}
+    bad = [t for t in _col(rows, "title") if t in nav]
+    return not bad, f"titles that are really nav/chrome links: {bad}"
+
+
+# --- jobs: structured data exists, so cross-check the two representations ---
+
+@check("jobs")
+def jobs_posted_matches_the_datetime_attributes(rows, html):
+    found = re.findall(r'datetime="(\d{4}-\d{2}-\d{2})"', html)
+    return found == _col(rows, "posted"), f"raw {len(found)} datetimes vs {len(rows)} records"
+
+
+@check("jobs")
+def jobs_posted_are_real_calendar_dates(rows, html):
+    """Guards the bug that shipped once: a yyyy-mm-dd-shaped string that is not
+    a date (month 13, day 45) used to pass straight through the transform."""
+    from datetime import date
+    bad = []
+    for v in _col(rows, "posted"):
+        try:
+            date.fromisoformat(v)
+        except (ValueError, TypeError):
+            bad.append(v)
+    return not bad, f"impossible dates: {bad}"
+
+
+@check("jobs")
+def jobs_salary_matches_the_lower_bound_in_raw_text(rows, html):
+    found = [float(x.replace(",", "")) for x in re.findall(r"\$([\d,]+) &ndash;", html)]
+    return found == _col(rows, "salary"), f"raw {len(found)} salary floors vs {len(rows)} records"
+
+
+@check("jobs")
+def jobs_companies_appear_as_the_hiring_organisation(rows, html):
+    found = re.findall(r'itemprop="hiringOrganization">([^<]+)<', html)
+    return [c.strip() for c in found] == _col(rows, "company"), \
+        f"raw {len(found)} organisations vs {len(rows)} records"
+
+
+@check("jobs")
+def jobs_jsonld_agrees_with_the_markup(rows, html):
+    """The two representations are independent of each other and of the runtime;
+    if the extractor read the wrong one, they disagree."""
+    blob = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+    graph = json.loads(blob.group(1))["@graph"]
+    return ([g["title"] for g in graph] == _col(rows, "title")
+            and [g["datePosted"] for g in graph] == _col(rows, "posted")), \
+        "JSON-LD titles/dates disagree with the extracted truth"
+
 def verify(site: str) -> list[tuple[str, bool, str]]:
     rows, html = truth(site), raw(site)
     out = []
@@ -143,7 +235,13 @@ def verify(site: str) -> list[tuple[str, bool, str]]:
 
 if __name__ == "__main__":
     failed = 0
-    for site in ("books", "quotes", "wikitable", "shop"):
+    # A site with only the generic checks is not independently verified at all,
+    # and would pass this script while proving nothing about its ground truth.
+    unchecked = [s for s in SITE_DIRS if not specific_checks(s)]
+    if unchecked:
+        print(f"\nSITES WITH NO INDEPENDENT CHECK: {unchecked}")
+        raise SystemExit(1)
+    for site in SITE_DIRS:
         print(f"\n{site}  ({len(truth(site))} records)")
         for name, ok, msg in verify(site):
             print(f"  {'PASS' if ok else 'FAIL'}  {name:34} {'' if ok else msg}")

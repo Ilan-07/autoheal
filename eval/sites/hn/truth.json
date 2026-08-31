@@ -1,0 +1,182 @@
+[
+ {
+  "title": "Rewriting the borrow checker",
+  "points": 91,
+  "author": "pg",
+  "comments": 401
+ },
+ {
+  "title": "Debugging the CPython interpreter",
+  "points": 250,
+  "author": "antirez",
+  "comments": 261
+ },
+ {
+  "title": "Understanding CRDTs",
+  "points": 808,
+  "author": "kmett",
+  "comments": 177
+ },
+ {
+  "title": "Profiling an ARM64 JIT",
+  "points": 595,
+  "author": "danluu",
+  "comments": 299
+ },
+ {
+  "title": "Rethinking SQLite's query planner",
+  "points": 1221,
+  "author": "swiftbyte",
+  "comments": 133
+ },
+ {
+  "title": "Benchmarking the DNS root",
+  "points": 536,
+  "author": "tptacek",
+  "comments": 210
+ },
+ {
+  "title": "Deprecating a TLA+ spec",
+  "points": 551,
+  "author": "geohot",
+  "comments": 427
+ },
+ {
+  "title": "Formalising a 40-year-old Fortran kernel",
+  "points": 669,
+  "author": "rsc",
+  "comments": 459
+ },
+ {
+  "title": "Reverse-engineering distributed clocks",
+  "points": 49,
+  "author": "aphyr",
+  "comments": 291
+ },
+ {
+  "title": "Compiling the Linux scheduler",
+  "points": 415,
+  "author": "hoare_t",
+  "comments": 450
+ },
+ {
+  "title": "Fuzzing column stores",
+  "points": 417,
+  "author": "jgrahamc",
+  "comments": 58
+ },
+ {
+  "title": "Tracing WebAssembly GC",
+  "points": 936,
+  "author": "peterthiel",
+  "comments": 198
+ },
+ {
+  "title": "Rewriting the borrow checker",
+  "points": 204,
+  "author": "pg",
+  "comments": 212
+ },
+ {
+  "title": "Debugging the CPython interpreter",
+  "points": 206,
+  "author": "antirez",
+  "comments": 296
+ },
+ {
+  "title": "Understanding CRDTs",
+  "points": 814,
+  "author": "kmett",
+  "comments": 225
+ },
+ {
+  "title": "Profiling an ARM64 JIT",
+  "points": 615,
+  "author": "danluu",
+  "comments": 292
+ },
+ {
+  "title": "Rethinking SQLite's query planner",
+  "points": 327,
+  "author": "swiftbyte",
+  "comments": 405
+ },
+ {
+  "title": "Benchmarking the DNS root",
+  "points": 835,
+  "author": "tptacek",
+  "comments": 119
+ },
+ {
+  "title": "Deprecating a TLA+ spec",
+  "points": 1183,
+  "author": "geohot",
+  "comments": 374
+ },
+ {
+  "title": "Formalising a 40-year-old Fortran kernel",
+  "points": 427,
+  "author": "rsc",
+  "comments": 199
+ },
+ {
+  "title": "Reverse-engineering distributed clocks",
+  "points": 286,
+  "author": "aphyr",
+  "comments": 68
+ },
+ {
+  "title": "Compiling the Linux scheduler",
+  "points": 1013,
+  "author": "hoare_t",
+  "comments": 53
+ },
+ {
+  "title": "Fuzzing column stores",
+  "points": 941,
+  "author": "jgrahamc",
+  "comments": 3
+ },
+ {
+  "title": "Tracing WebAssembly GC",
+  "points": 985,
+  "author": "peterthiel",
+  "comments": 304
+ },
+ {
+  "title": "Rewriting the borrow checker",
+  "points": 1068,
+  "author": "pg",
+  "comments": 245
+ },
+ {
+  "title": "Debugging the CPython interpreter",
+  "points": 1014,
+  "author": "antirez",
+  "comments": 188
+ },
+ {
+  "title": "Understanding CRDTs",
+  "points": 1112,
+  "author": "kmett",
+  "comments": 443
+ },
+ {
+  "title": "Profiling an ARM64 JIT",
+  "points": 8,
+  "author": "danluu",
+  "comments": 125
+ },
+ {
+  "title": "Rethinking SQLite's query planner",
+  "points": 56,
+  "author": "swiftbyte",
+  "comments": 238
+ },
+ {
+  "title": "Benchmarking the DNS root",
+  "points": 928,
+  "author": "tptacek",
+  "comments": 58
+ }
+]

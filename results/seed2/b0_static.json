@@ -1803,5 +1803,954 @@
   "silent": false,
   "absorbed_by_fallback": [],
   "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "clean",
+  "seed": 2,
+  "severity": 0,
+  "mutations": [],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "class_rename",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (hnuser, storylink, score, rank...)",
+    "changed": 8
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 0.75,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 0.1,
+   "comments": 1.0
+  },
+  "avg_fill": 0.775,
+  "field_f1": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 0.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "author",
+   "points",
+   "title"
+  ],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "tag_swap",
+  "seed": 2,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 31 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 31
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 30,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.0,
+   "comments": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.0,
+   "comments": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "reparent",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 30 records in 2 x div.layout-inner",
+    "changed": 30
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "attr_migration",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 0 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 0
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": true
+ },
+ {
+  "site": "hn",
+  "recipe": "decoy_injection",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 60 decoys on ['story-body', 'titleline'] marked .compare-at (plausible wrong values, ahead of the real node)",
+    "changed": 60
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 0.0083,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.0,
+   "comments": 0.033
+  },
+  "silent": true,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "content_deferred",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "content_deferred",
+    "severity": 2,
+    "detail": "blanked visible text in 30 records (240 nodes); structured data left intact",
+    "changed": 240
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.967,
+   "comments": 0.0
+  },
+  "avg_fill": 0.242,
+  "field_f1": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.0,
+   "comments": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "author"
+  ],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "jsonld_drop",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "jsonld_drop",
+    "severity": 2,
+    "detail": "removed 0 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 0
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": true
+ },
+ {
+  "site": "hn",
+  "recipe": "record_reorder",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "record_reorder",
+    "severity": 2,
+    "detail": "reordered 30 records in the DOM",
+    "changed": 30
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "points": 1.0,
+   "author": 1.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "redesign",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (hnuser, storylink, score, rank...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 30 records in 2 x div.layout-inner",
+    "changed": 30
+   },
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 0 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 0
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 0.5,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "points": 1.0,
+   "author": 0.1,
+   "comments": 1.0
+  },
+  "avg_fill": 0.525,
+  "field_f1": {
+   "title": 0.0,
+   "points": 1.0,
+   "author": 0.0,
+   "comments": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "author",
+   "points"
+  ],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "redesign+decoy",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (hnuser, storylink, score, rank...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 30 records in 2 x div.layout-inner",
+    "changed": 30
+   },
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 60 decoys on ['age', 'commentlink'] marked .was-value (plausible wrong values, ahead of the real node)",
+    "changed": 60
+   }
+  ],
+  "n_pred": 30,
+  "n_truth": 30,
+  "macro_f1": 0.2583,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "points": 1.0,
+   "author": 0.1,
+   "comments": 1.0
+  },
+  "avg_fill": 0.525,
+  "field_f1": {
+   "title": 0.0,
+   "points": 1.0,
+   "author": 0.0,
+   "comments": 0.033
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "author",
+   "points"
+  ],
+  "noop": false
+ },
+ {
+  "site": "hn",
+  "recipe": "full_rewrite",
+  "seed": 2,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 3,
+    "detail": "renamed 12 class tokens -> hashed (hnuser, storylink, score, rank...)",
+    "changed": 12
+   },
+   {
+    "name": "reparent",
+    "severity": 3,
+    "detail": "wrapped children of 30 records in 3 x div.layout-inner",
+    "changed": 30
+   },
+   {
+    "name": "jsonld_drop",
+    "severity": 3,
+    "detail": "removed 0 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 0
+   },
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 31 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 31
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 30,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.0,
+   "comments": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "title": 0.0,
+   "points": 0.0,
+   "author": 0.0,
+   "comments": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "clean",
+  "seed": 2,
+  "severity": 0,
+  "mutations": [],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "class_rename",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (posting-title, posting-org, posting-facts, fact-location...)",
+    "changed": 8
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "company",
+   "location",
+   "salary",
+   "title"
+  ],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "tag_swap",
+  "seed": 2,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 19 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 19
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "<root:tier2>",
+   "company",
+   "location",
+   "posted",
+   "salary",
+   "title"
+  ],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "reparent",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 18 records in 2 x div.layout-inner",
+    "changed": 18
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "attr_migration",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 90 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 90
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "decoy_injection",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 36 decoys on ['fact-salary', 'posting-apply'] marked .promo-ref (plausible wrong values, ahead of the real node)",
+    "changed": 36
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 0.8,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 0.0,
+   "posted": 1.0
+  },
+  "silent": true,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "content_deferred",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "content_deferred",
+    "severity": 2,
+    "detail": "blanked visible text in 18 records (162 nodes); structured data left intact",
+    "changed": 162
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "company",
+   "location",
+   "salary",
+   "title"
+  ],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "jsonld_drop",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "jsonld_drop",
+    "severity": 2,
+    "detail": "removed 109 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 109
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "record_reorder",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "record_reorder",
+    "severity": 2,
+    "detail": "reordered 18 records in the DOM",
+    "changed": 18
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "redesign",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (posting-title, posting-org, posting-facts, fact-location...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 18 records in 2 x div.layout-inner",
+    "changed": 18
+   },
+   {
+    "name": "attr_migration",
+    "severity": 2,
+    "detail": "migrated 90 attributes (data-* -> data-qa-*, itemprop -> data-prop), dropped 0",
+    "changed": 90
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 1.0,
+  "record_em": 1.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [
+   "company",
+   "location",
+   "salary",
+   "title"
+  ],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "redesign+decoy",
+  "seed": 2,
+  "severity": 2,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 2,
+    "detail": "renamed 8 class tokens -> hashed (posting-title, posting-org, posting-facts, fact-location...)",
+    "changed": 8
+   },
+   {
+    "name": "reparent",
+    "severity": 2,
+    "detail": "wrapped children of 18 records in 2 x div.layout-inner",
+    "changed": 18
+   },
+   {
+    "name": "decoy_injection",
+    "severity": 2,
+    "detail": "injected 36 decoys on ['css-207xwx2', 'css-3uy17k9'] marked .was-value (plausible wrong values, ahead of the real node)",
+    "changed": 36
+   }
+  ],
+  "n_pred": 18,
+  "n_truth": 18,
+  "macro_f1": 0.8,
+  "record_em": 0.0,
+  "fill": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 1.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "avg_fill": 1.0,
+  "field_f1": {
+   "title": 1.0,
+   "company": 1.0,
+   "location": 0.0,
+   "salary": 1.0,
+   "posted": 1.0
+  },
+  "silent": true,
+  "absorbed_by_fallback": [
+   "company",
+   "location",
+   "salary",
+   "title"
+  ],
+  "noop": false
+ },
+ {
+  "site": "jobs",
+  "recipe": "full_rewrite",
+  "seed": 2,
+  "severity": 3,
+  "mutations": [
+   {
+    "name": "class_rename",
+    "severity": 3,
+    "detail": "renamed 9 class tokens -> hashed (posting-title, posting-org, posting-facts, fact-location...)",
+    "changed": 9
+   },
+   {
+    "name": "reparent",
+    "severity": 3,
+    "detail": "wrapped children of 18 records in 3 x div.layout-inner",
+    "changed": 18
+   },
+   {
+    "name": "jsonld_drop",
+    "severity": 3,
+    "detail": "removed 109 structured-data carriers (ld+json scripts, microdata attrs)",
+    "changed": 109
+   },
+   {
+    "name": "tag_swap",
+    "severity": 3,
+    "detail": "swapped 19 nodes (table/thead/tbody -> div/section, role= attrs added)",
+    "changed": 19
+   }
+  ],
+  "n_pred": 0,
+  "n_truth": 18,
+  "macro_f1": 0.0,
+  "record_em": 0.0,
+  "fill": {
+   "title": 0.0,
+   "company": 0.0,
+   "location": 0.0,
+   "salary": 0.0,
+   "posted": 0.0
+  },
+  "avg_fill": 0.0,
+  "field_f1": {
+   "title": 0.0,
+   "company": 0.0,
+   "location": 0.0,
+   "salary": 0.0,
+   "posted": 0.0
+  },
+  "silent": false,
+  "absorbed_by_fallback": [],
+  "noop": false
  }
 ]

@@ -1,0 +1,128 @@
+[
+ {
+  "title": "Backend Engineer",
+  "company": "Northwind Systems",
+  "location": "Berlin, DE",
+  "salary": 107000.0,
+  "posted": "2026-01-19"
+ },
+ {
+  "title": "Senior Security Analyst",
+  "company": "Lumen Analytics",
+  "location": "Zürich, CH",
+  "salary": 109000.0,
+  "posted": "2026-07-17"
+ },
+ {
+  "title": "Staff Embedded Engineer",
+  "company": "Aurora Labs",
+  "location": "Manchester, UK",
+  "salary": 115000.0,
+  "posted": "2026-04-09"
+ },
+ {
+  "title": "Principal Compiler Engineer",
+  "company": "Ardent Payments",
+  "location": "Toronto, ON",
+  "salary": 126000.0,
+  "posted": "2026-04-20"
+ },
+ {
+  "title": "Database Engineer",
+  "company": "Cobalt Freight",
+  "location": "Austin, TX",
+  "salary": 128000.0,
+  "posted": "2026-02-03"
+ },
+ {
+  "title": "Senior Data Engineer",
+  "company": "Vireo Energy",
+  "location": "Tallinn, EE",
+  "salary": 160000.0,
+  "posted": "2026-07-01"
+ },
+ {
+  "title": "Staff ML Infrastructure Engineer",
+  "company": "Meridian Health",
+  "location": "Remote (US)",
+  "salary": 135000.0,
+  "posted": "2026-07-12"
+ },
+ {
+  "title": "Principal Site Reliability Engineer",
+  "company": "Halcyon Media",
+  "location": "Lisbon, PT",
+  "salary": 77000.0,
+  "posted": "2026-01-19"
+ },
+ {
+  "title": "Platform Engineer",
+  "company": "Kestrel Robotics",
+  "location": "Remote (EU)",
+  "salary": 117000.0,
+  "posted": "2026-03-20"
+ },
+ {
+  "title": "Senior Backend Engineer",
+  "company": "Northwind Systems",
+  "location": "Berlin, DE",
+  "salary": 97000.0,
+  "posted": "2026-06-19"
+ },
+ {
+  "title": "Staff Security Analyst",
+  "company": "Lumen Analytics",
+  "location": "Zürich, CH",
+  "salary": 106000.0,
+  "posted": "2026-06-19"
+ },
+ {
+  "title": "Principal Embedded Engineer",
+  "company": "Aurora Labs",
+  "location": "Manchester, UK",
+  "salary": 80000.0,
+  "posted": "2026-03-23"
+ },
+ {
+  "title": "Compiler Engineer",
+  "company": "Ardent Payments",
+  "location": "Toronto, ON",
+  "salary": 131000.0,
+  "posted": "2026-08-22"
+ },
+ {
+  "title": "Senior Database Engineer",
+  "company": "Cobalt Freight",
+  "location": "Austin, TX",
+  "salary": 152000.0,
+  "posted": "2026-03-26"
+ },
+ {
+  "title": "Staff Data Engineer",
+  "company": "Vireo Energy",
+  "location": "Tallinn, EE",
+  "salary": 92000.0,
+  "posted": "2026-06-22"
+ },
+ {
+  "title": "Principal ML Infrastructure Engineer",
+  "company": "Meridian Health",
+  "location": "Remote (US)",
+  "salary": 136000.0,
+  "posted": "2026-02-03"
+ },
+ {
+  "title": "Site Reliability Engineer",
+  "company": "Halcyon Media",
+  "location": "Lisbon, PT",
+  "salary": 82000.0,
+  "posted": "2026-01-19"
+ },
+ {
+  "title": "Senior Platform Engineer",
+  "company": "Kestrel Robotics",
+  "location": "Remote (EU)",
+  "salary": 105000.0,
+  "posted": "2026-05-27"
+ }
+]

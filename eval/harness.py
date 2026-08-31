@@ -18,7 +18,7 @@ from eval import mutators
 from autoheal.metrics import score
 
 ROOT = pathlib.Path(__file__).resolve().parent
-SITES = ["books", "quotes", "wikitable", "shop"]
+SITES = ["books", "quotes", "wikitable", "shop", "hn", "jobs"]
 BASE_URL = "https://example.test/"
 
 # Single mutations plus two compounds. Compounds matter: a real redesign is

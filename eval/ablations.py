@@ -71,12 +71,23 @@ def main() -> int:
               f" {r['overfits']:9} {r['quarantine']:8.2f} {r['llm_calls']:12}")
 
     f, m, xs = out["full"], out["-memory"], out["-memory(xs)"]
-    print(f"\n  memory, all recall      : {f['llm_calls']} vs {m['llm_calls']} model calls"
-          f"  ({1 - f['llm_calls'] / m['llm_calls']:.0%} fewer)" if m["llm_calls"] else "")
-    print(f"  memory, cross-site only : {xs['llm_calls']} vs {m['llm_calls']} model calls"
-          f"  ({1 - xs['llm_calls'] / m['llm_calls']:.0%} fewer)")
-    print("    -> most of the saving is a site breaking the same way twice, not")
-    print("       transfer between sites. Transfer is real but the smaller half.")
+    # Derive the reading rather than assert it. This paragraph used to hardcode
+    # "transfer is the smaller half", which was true at four sites (19% vs 49%)
+    # and became false at six (55% vs 62%) without anything going red. A
+    # conclusion baked into a print statement is a claim that cannot be checked.
+    if m["llm_calls"]:
+        saved_all = 1 - f["llm_calls"] / m["llm_calls"]
+        saved_xs = 1 - xs["llm_calls"] / m["llm_calls"]
+        share = saved_xs / saved_all if saved_all else 0.0
+        print(f"\n  memory, all recall      : {f['llm_calls']} vs {m['llm_calls']} model calls"
+              f"  ({saved_all:.0%} fewer)")
+        print(f"  memory, cross-site only : {xs['llm_calls']} vs {m['llm_calls']} model calls"
+              f"  ({saved_xs:.0%} fewer)")
+        verdict = ("transfer between sites accounts for MOST of the saving"
+                   if share >= 0.6 else
+                   "transfer is real but the smaller half; most of the saving is a"
+                   " site breaking the same way twice")
+        print(f"    -> {verdict} ({share:.0%} of it).")
     st = out["-stack"]
     print(f"\n  -stack: {st['degraded']} cases needed repair vs {f['degraded']} with the stack"
           f" (recovery {st['recovery']:.2f} either way)")

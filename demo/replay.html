@@ -585,16 +585,6 @@
    "label": "with memory",
    "items": [
     {
-     "kind": "css",
-     "q": "span.product-rating:not(.was-value)",
-     "attr": "data-value",
-     "recovery": 1.0,
-     "coverage": 1.0,
-     "prior": 0.9,
-     "survives_old": true,
-     "score": 0.98
-    },
-    {
      "kind": "jsonld",
      "q": "aggregateRating.ratingValue",
      "attr": null,
@@ -603,6 +593,16 @@
      "prior": 0.9,
      "survives_old": true,
      "score": 0.98
+    },
+    {
+     "kind": "css",
+     "q": "span.product-rating:not(.was-value)",
+     "attr": null,
+     "recovery": 1.0,
+     "coverage": 1.0,
+     "prior": 0.75,
+     "survives_old": true,
+     "score": 0.95
     },
     {
      "kind": "css",
@@ -635,16 +635,6 @@
      "score": 0.86
     },
     {
-     "kind": "structural",
-     "q": "./*[3]/*[4]",
-     "attr": "data-value",
-     "recovery": 1.0,
-     "coverage": 1.0,
-     "prior": 0.9,
-     "survives_old": false,
-     "score": 0.86
-    },
-    {
      "kind": "xpath",
      "q": "./div[1]/span[3]",
      "attr": "data-value",
@@ -655,24 +645,34 @@
      "score": 0.86
     },
     {
-     "kind": "xpath",
-     "q": "./div[1]/span[4]",
+     "kind": "css",
+     "q": "span.product-rating",
      "attr": "data-value",
      "recovery": 1.0,
      "coverage": 1.0,
      "prior": 0.9,
-     "survives_old": false,
-     "score": 0.86
+     "survives_old": true,
+     "score": 0.83
+    },
+    {
+     "kind": "css",
+     "q": "span",
+     "attr": "data-value",
+     "recovery": 1.0,
+     "coverage": 1.0,
+     "prior": 0.9,
+     "survives_old": true,
+     "score": 0.83
     }
    ],
    "recalled": [
     "similar breakage on 'quotes.author' (0.68 match): strategy exclusion -> css 'small.author:not(.compare-at)' -> healed (F1 0.33 -> 1.00, 1 cycle(s))",
     "similar breakage on 'quotes.text' (0.68 match): strategy exclusion -> css 'span.text:not(.compare-at)' -> healed (F1 0.33 -> 1.00, 1 cycle(s))"
    ],
-   "used_memory": false,
-   "used_llm": true,
-   "tokens": 1941,
-   "cost": "model chose (1941 tokens)"
+   "used_memory": true,
+   "used_llm": false,
+   "tokens": 0,
+   "cost": "recalled from memory (0 tokens)"
   },
   {
    "kind": "patch",
@@ -680,8 +680,8 @@
    "hold": 1100,
    "field": "rating",
    "label": "with memory",
-   "describe": "fields.rating: promote jsonld 'aggregateRating.ratingValue' to tier 0 -- [ollama:gpt-oss:120b-cloud] The JSON\u2011LD selector targets the semantic `aggregateRating.ratingValue` property, which is independent of the noisy CSS class injection that introduced decoy nodes. Structured data is far more stable across redesigns than class\u2011based or positional selectors.",
-   "strategy": "adopt_candidate:jsonld"
+   "describe": "fields.rating: promote css 'span.product-rating:not(.was-value)' to tier 0 -- recalled: similar breakage on 'quotes.author' (0.68 match): strategy exclusion -> css 'small.author:not(.compare-at)' -> healed (F1 0.33 -> 1.00, 1 cycle(s))",
+   "strategy": "adopt_candidate:css"
   },
   {
    "kind": "gate",
@@ -712,15 +712,17 @@
    "act": 3,
    "hold": 2000,
    "lines": [
-    "spec shop v1 -> v2  (autoheal: cycle 1: DECOY_INJECTED(2) -> fields.price: promote css 'span.product-price:not(.was-value)' to tier 0 -- recalled: similar breakage on 'quotes.author' (0.78 match): strategy exclusion -> css 'small.author:not(.compare-at)' -> healed (F1 0.33 -> 1.00, 1 cycle(s)); fields.rating: promote jsonld 'aggregateRating.ratingValue' to tier 0 -- [ollama:gpt-oss:120b-cloud] The JSON\u2011LD selector targets the semantic `aggregateRating.ratingValue` property, which is independent of the noisy CSS class injection that introduced decoy nodes. Structured data is far more stable across redesigns than class\u2011based or positional selectors.)",
+    "spec shop v1 -> v2  (autoheal: cycle 1: DECOY_INJECTED(2) -> fields.price: promote css 'span.product-price:not(.was-value)' to tier 0 -- recalled: similar breakage on 'quotes.author' (0.78 match): strategy exclusion -> css 'small.author:not(.compare-at)' -> healed (F1 0.33 -> 1.00, 1 cycle(s)); fields.rating: promote css 'span.product-rating:not(.was-value)' to tier 0 -- recalled: similar breakage on 'quotes.author' (0.68 match): strategy exclusion -> css 'small.author:not(.compare-at)' -> healed (F1 0.33 -> 1.00, 1 cycle(s)))",
     "  fields.price:",
     "    + [0] css 'span.product-price:not(.was-value)'   (born v2)",
     "    ~ [0->1] css 'span.product-price'   (demoted, kept as fallback)",
     "    ~ [1->2] jsonld 'offers.price'   (demoted, kept as fallback)",
     "    ~ [2->3] regex '\\\\$(\\\\d+\\\\.\\\\d{2})'   (demoted, kept as fallback)",
     "  fields.rating:",
-    "    ~ [1->0] jsonld 'aggregateRating.ratingValue'   (demoted, kept as fallback)",
-    "    ~ [0->1] css 'span.product-rating'   (demoted, kept as fallback)"
+    "    + [0] css 'span.product-rating:not(.was-value)'   (born v2)",
+    "    ~ [0->1] css 'span.product-rating'   (demoted, kept as fallback)",
+    "    ~ [1->2] jsonld 'aggregateRating.ratingValue'   (demoted, kept as fallback)",
+    "    ~ [2->3] css 'span.product-rating'   (demoted, kept as fallback)"
    ],
    "label": "with memory"
   },
@@ -734,9 +736,9 @@
    "f1_before": 0.8,
    "f1_after": 1.0,
    "cycles": 1,
-   "tokens": 1941,
-   "llm_calls": 1,
-   "avoided": 1,
+   "tokens": 0,
+   "llm_calls": 0,
+   "avoided": 2,
    "version": "v1->v2",
    "card": null
   },
@@ -745,15 +747,15 @@
    "act": 3,
    "hold": 3000,
    "with_memory": {
-    "calls": 1,
-    "tokens": 1941,
-    "avoided": 1,
+    "calls": 0,
+    "tokens": 0,
+    "avoided": 2,
     "healed": true,
     "f1": 1.0
    },
    "ablated": {
     "calls": 2,
-    "tokens": 3502,
+    "tokens": 3688,
     "avoided": 0,
     "healed": true,
     "f1": 1.0

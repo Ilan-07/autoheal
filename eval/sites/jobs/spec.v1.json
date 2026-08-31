@@ -1,0 +1,286 @@
+{
+  "site": "jobs",
+  "version": 1,
+  "parent": null,
+  "record_selector": [
+    {
+      "kind": "css",
+      "q": "li.posting",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    },
+    {
+      "kind": "css",
+      "q": "ul.posting-list > li",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    },
+    {
+      "kind": "jsonld",
+      "q": "auto",
+      "rel": null,
+      "attr": null,
+      "born": 1,
+      "last_hit": null,
+      "note": null
+    }
+  ],
+  "fields": {
+    "title": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "h2.posting-title",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "[itemprop=title]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "jsonld",
+          "q": "title",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 120
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "company": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "p.posting-org",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "[itemprop=hiringOrganization]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "jsonld",
+          "q": "hiringOrganization.name",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 80
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "location": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "dd.fact-location",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "[itemprop=jobLocation]",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "jsonld",
+          "q": "jobLocation",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "text",
+      "validators": [
+        {
+          "type": "nonempty",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        },
+        {
+          "type": "max_len",
+          "min": null,
+          "max": null,
+          "pattern": null,
+          "values": null,
+          "max_len": 60
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "salary": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "dd.fact-salary",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "text_anchor",
+          "q": "Salary",
+          "rel": "next_sibling_text",
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "jsonld",
+          "q": "baseSalary.value.minValue",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "money",
+      "validators": [
+        {
+          "type": "number",
+          "min": 1000.0,
+          "max": 1000000.0,
+          "pattern": null,
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    },
+    "posted": {
+      "stack": [
+        {
+          "kind": "css",
+          "q": "time",
+          "rel": null,
+          "attr": "datetime",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "[itemprop=datePosted]",
+          "rel": null,
+          "attr": "datetime",
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "jsonld",
+          "q": "datePosted",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        },
+        {
+          "kind": "css",
+          "q": "dd.fact-posted",
+          "rel": null,
+          "attr": null,
+          "born": 1,
+          "last_hit": null,
+          "note": null
+        }
+      ],
+      "transform": "iso_date",
+      "validators": [
+        {
+          "type": "regex",
+          "min": null,
+          "max": null,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "values": null,
+          "max_len": null
+        }
+      ],
+      "min_fill": 0.95
+    }
+  },
+  "created_by": "human",
+  "note": null
+}

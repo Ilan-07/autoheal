@@ -87,6 +87,63 @@ SITES["shop"] = ExtractorSpec(
             validators=[V(type="enum", values=["In stock", "Low stock", "Backorder"])]),
     })
 
+# A link aggregator with no structured data at all. Everything is visible text
+# or an href, so there is no schema.org tier to fall back on -- this is the site
+# where a redesign has to be repaired rather than absorbed. Note the nav bar and
+# footer reuse `.storylink`, `.hnuser` and `.score`, which is realistic and means
+# a record-relative locator is the only safe kind.
+SITES["hn"] = ExtractorSpec(
+    site="hn",
+    record_selector=[L(kind="css", q="li.story"), L(kind="css", q="ol.itemlist > li")],
+    fields={
+        "title": FieldSpec(
+            stack=[L(kind="css", q="a.storylink"), L(kind="css", q=".titleline a"),
+                   L(kind="structural", q="./*[2]/*[1]/*[1]")],
+            validators=[V(type="nonempty"), V(type="max_len", max_len=200)]),
+        "points": FieldSpec(
+            stack=[L(kind="css", q="span.score"), L(kind="regex", q=r"(\d+)\s+points")],
+            transform="int", validators=[V(type="number", min=0, max=100000)]),
+        "author": FieldSpec(
+            stack=[L(kind="css", q="a.hnuser"), L(kind="text_anchor", q="by", rel="next_sibling_text")],
+            validators=[V(type="nonempty"), V(type="max_len", max_len=40)]),
+        "comments": FieldSpec(
+            stack=[L(kind="css", q="a.commentlink"), L(kind="regex", q=r"(\d+)\s+comments")],
+            transform="int", validators=[V(type="number", min=0, max=100000)]),
+    })
+
+# A job board carrying JSON-LD, microdata and a definition list. The second
+# structured-data site in the corpus, so a `structured_data` repair learned on
+# `shop` finally has somewhere to transfer to. Also the only site with a date.
+SITES["jobs"] = ExtractorSpec(
+    site="jobs",
+    record_selector=[L(kind="css", q="li.posting"), L(kind="css", q="ul.posting-list > li"),
+                     L(kind="jsonld", q="auto")],
+    fields={
+        "title": FieldSpec(
+            stack=[L(kind="css", q="h2.posting-title"), L(kind="css", q="[itemprop=title]"),
+                   L(kind="jsonld", q="title")],
+            validators=[V(type="nonempty"), V(type="max_len", max_len=120)]),
+        "company": FieldSpec(
+            stack=[L(kind="css", q="p.posting-org"), L(kind="css", q="[itemprop=hiringOrganization]"),
+                   L(kind="jsonld", q="hiringOrganization.name")],
+            validators=[V(type="nonempty"), V(type="max_len", max_len=80)]),
+        "location": FieldSpec(
+            stack=[L(kind="css", q="dd.fact-location"), L(kind="css", q="[itemprop=jobLocation]"),
+                   L(kind="jsonld", q="jobLocation")],
+            validators=[V(type="nonempty"), V(type="max_len", max_len=60)]),
+        "salary": FieldSpec(
+            stack=[L(kind="css", q="dd.fact-salary"),
+                   L(kind="text_anchor", q="Salary", rel="next_sibling_text"),
+                   L(kind="jsonld", q="baseSalary.value.minValue")],
+            transform="money", validators=[V(type="number", min=1000, max=1000000)]),
+        "posted": FieldSpec(
+            stack=[L(kind="css", q="time", attr="datetime"),
+                   L(kind="css", q="[itemprop=datePosted]", attr="datetime"),
+                   L(kind="jsonld", q="datePosted"), L(kind="css", q="dd.fact-posted")],
+            transform="iso_date", validators=[V(type="regex", pattern=r"^\d{4}-\d{2}-\d{2}$")]),
+    })
+
+
 if __name__ == "__main__":
     for name, spec in SITES.items():
         p = pathlib.Path("eval/sites") / name / "spec.v1.json"

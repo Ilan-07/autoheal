@@ -1169,5 +1169,630 @@
    "[name] 50% of values never seen in the 24-value baseline sample",
    "[price] 100% of values never seen in the 24-value baseline sample"
   ]
+ },
+ {
+  "site": "hn",
+  "recipe": "clean",
+  "seed": 0,
+  "noop": false,
+  "control": true,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "hn",
+  "recipe": "class_rename",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.75,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.985,
+  "broken_fields": [
+   "author",
+   "title",
+   "points"
+  ],
+  "signals": [
+   "fill_drop",
+   "novel_values",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] per-record field-presence entropy 0.47 vs -0.00 -- records no longer agree on which fields exist",
+   "[author] text drift: token overlap 0.00 with baseline, mean length 12 vs 6",
+   "[author] 100% of values never seen in the 30-value baseline sample",
+   "[author] fill 10% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "tag_swap",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "author",
+   "comments",
+   "points",
+   "title"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 30 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[author] fill 0% vs baseline 100% (floor 95%)",
+   "[comments] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "reparent",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "hn",
+  "recipe": "attr_migration",
+  "seed": 0,
+  "noop": true,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "hn",
+  "recipe": "decoy_injection",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0083,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.923,
+  "broken_fields": [
+   "points",
+   "author",
+   "comments",
+   "title"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values",
+   "value_drift"
+  ],
+  "evidence": [
+   "[author] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[author] 100% of values never seen in the 30-value baseline sample",
+   "[author] text drift: token overlap 0.93 with baseline, mean length 17 vs 6",
+   "[comments] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "content_deferred",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "comments",
+   "points",
+   "title",
+   "author"
+  ],
+  "signals": [
+   "constant_collapse",
+   "fill_drop",
+   "novel_values",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] per-record field-presence entropy 0.21 vs -0.00 -- records no longer agree on which fields exist",
+   "[author] text drift: token overlap 0.00 with baseline, mean length 6 vs 6",
+   "[author] 100% of values never seen in the 30-value baseline sample",
+   "[author] distinct-value rate 3% vs baseline 40%; 29/29 records now report 'by | |'"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "jsonld_drop",
+  "seed": 0,
+  "noop": true,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "hn",
+  "recipe": "record_reorder",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "hn",
+  "recipe": "redesign",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.5,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "title",
+   "author",
+   "points"
+  ],
+  "signals": [
+   "fill_drop",
+   "novel_values",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] per-record field-presence entropy 0.47 vs -0.00 -- records no longer agree on which fields exist",
+   "[author] text drift: token overlap 0.00 with baseline, mean length 12 vs 6",
+   "[author] 100% of values never seen in the 30-value baseline sample",
+   "[author] fill 10% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "redesign+decoy",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.5455,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "title",
+   "author",
+   "points"
+  ],
+  "signals": [
+   "fill_drop",
+   "match_count",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] per-record field-presence entropy 0.47 vs -0.00 -- records no longer agree on which fields exist",
+   "[author] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[author] fill 10% vs baseline 100% (floor 95%)",
+   "[author] text drift: token overlap 0.08 with baseline, mean length 9 vs 6"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "full_rewrite",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "author",
+   "comments",
+   "points",
+   "title"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 30 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[author] fill 0% vs baseline 100% (floor 95%)",
+   "[comments] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "hn",
+  "recipe": "content_churn",
+  "seed": 0,
+  "noop": false,
+  "control": true,
+  "macro_f1": 0.4667,
+  "silent": true,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.257,
+  "broken_fields": [],
+  "signals": [
+   "novel_values",
+   "value_drift"
+  ],
+  "evidence": [
+   "[comments] 87% of values never seen in the 30-value baseline sample",
+   "[points] 90% of values never seen in the 30-value baseline sample",
+   "[points] numeric drift: median 358.5 vs 605, KS=0.30"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "clean",
+  "seed": 0,
+  "noop": false,
+  "control": true,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "jobs",
+  "recipe": "class_rename",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.723,
+  "broken_fields": [
+   "salary",
+   "company",
+   "location",
+   "title"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[company] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[location] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[salary] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[title] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "tag_swap",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.85,
+  "broken_fields": [
+   "company",
+   "location",
+   "posted",
+   "salary",
+   "title"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 2 (baseline tier 0)",
+   "[company] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[location] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[posted] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "reparent",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "jobs",
+  "recipe": "attr_migration",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "jobs",
+  "recipe": "decoy_injection",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.6,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.949,
+  "broken_fields": [
+   "salary",
+   "location",
+   "posted"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values",
+   "value_drift"
+  ],
+  "evidence": [
+   "[location] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[location] 100% of values never seen in the 18-value baseline sample",
+   "[location] text drift: token overlap 0.95 with baseline, mean length 22 vs 11",
+   "[posted] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "content_deferred",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.723,
+  "broken_fields": [
+   "company",
+   "location",
+   "salary",
+   "title"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[company] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[location] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[salary] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[title] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "jsonld_drop",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "jobs",
+  "recipe": "record_reorder",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "jobs",
+  "recipe": "redesign",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.723,
+  "broken_fields": [
+   "company",
+   "location",
+   "salary",
+   "title"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[company] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[location] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[salary] served by locator tier 2 (baseline tier 0); 100% of records shifted tier",
+   "[title] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "redesign+decoy",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.8,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.95,
+  "broken_fields": [
+   "location",
+   "company",
+   "salary",
+   "title"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[company] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[location] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[location] 100% of values never seen in the 18-value baseline sample",
+   "[location] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "full_rewrite",
+  "seed": 0,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "company",
+   "location",
+   "posted",
+   "salary",
+   "title"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 18 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[company] fill 0% vs baseline 100% (floor 95%)",
+   "[location] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "jobs",
+  "recipe": "content_churn",
+  "seed": 0,
+  "noop": false,
+  "control": true,
+  "macro_f1": 0.5,
+  "silent": true,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.25,
+  "broken_fields": [],
+  "signals": [
+   "novel_values"
+  ],
+  "evidence": [
+   "[location] 56% of values never seen in the 18-value baseline sample",
+   "[salary] 100% of values never seen in the 18-value baseline sample",
+   "[title] 56% of values never seen in the 18-value baseline sample"
+  ]
  }
 ]
