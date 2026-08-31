@@ -12,3 +12,7 @@ wheels/
 # Tooling
 .pytest_cache/
 .ruff_cache/
+
+# Coverage
+.coverage
+htmlcov/
