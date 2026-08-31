@@ -4,7 +4,7 @@ from autoheal.runtime import extract
 from autoheal.spec import ExtractorSpec
 from eval import mutators
 from eval.harness import SITES, load, truth
-from eval.metrics import score
+from autoheal.metrics import score
 
 ALL = list(mutators.MUTATORS)
 
