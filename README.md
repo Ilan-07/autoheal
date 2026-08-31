@@ -73,7 +73,7 @@ the healing eval and both drift lockfiles. Full reproduction guide in §8.
 
 ```bash
 make demo-replay        # open the recorded demo — self-contained, no server, no network
-open demo/autoheal-demo.mp4   # the 2:53 narrated walkthrough
+open demo/autoheal-demo.mp4   # the 4:07 narrated walkthrough
 ```
 
 ---
@@ -281,13 +281,15 @@ verbatim, not reconstructions. Regenerate with `make trajectories`.
 
 ### Video
 
-`demo/autoheal-demo.mp4` — 2:53, narrated. Built by `make video` + `make video-assemble`, which
-renders captured dashboard states against a generated narration track.
+`demo/autoheal-demo.mp4` — 4:07, narrated, within the brief's five-minute cap. Built by
+`make video` + `make video-assemble`, which renders title cards and captured dashboard states
+against a generated narration track. It opens on the problem, walks one real repair end to end,
+and closes on the comparison and the changelog.
 
-**Disclosure: the narration is synthesised speech** (macOS `say`, voice Samantha), not a human
-recording. The build refuses to run if any spoken number disagrees with `demo/events.json` — the
-token count is read straight out of the recording rather than typed into the script, because a
-hardcoded figure went stale the first time the demo was re-recorded and the check caught it.
+**Disclosure: the narration is synthesised speech** (macOS `say`), not a human recording. The
+build refuses to run if any spoken number disagrees with `demo/events.json` — the token count is
+read straight out of the recording rather than typed into the script, because a hardcoded figure
+went stale the first time the demo was re-recorded and the check caught it.
 
 ## 8. Reproduction guide
 

@@ -1,0 +1,103 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Autoheal — title cards</title>
+<!--
+  Title, problem, results and closing cards for the demo video. Same palette as
+  the dashboard so the video does not visibly change design halfway through.
+  `?card=N` selects one; demo/make_video.py captures each in turn.
+-->
+<style>
+  :root{--bg:#0e1116;--panel:#161b22;--line:#272e38;--fg:#e6edf3;--dim:#8b949e;
+        --ok:#3fb950;--bad:#f85149;--warn:#d29922;--acc:#58a6ff;--vio:#bc8cff}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font:16px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+       display:flex;align-items:center;justify-content:center}
+  .card{display:none;width:1180px;padding:0 24px}
+  .card.on{display:block}
+  h1{font-size:52px;line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
+  h2{font-size:30px;margin:0 0 22px;line-height:1.25}
+  .sub{color:var(--dim);font-size:19px;margin-bottom:34px}
+  .rule{height:2px;background:var(--acc);width:110px;margin:22px 0 30px}
+  table{width:100%;border-collapse:collapse;font-size:18px}
+  th,td{text-align:left;padding:11px 14px;border-top:1px solid var(--line)}
+  th{color:var(--dim);font-weight:500;font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+  tr.hi td{background:rgba(248,81,73,.10)}
+  tr.win td{background:rgba(63,185,80,.10)}
+  .big{font-size:44px;font-weight:600}
+  .ok{color:var(--ok)} .bad{color:var(--bad)} .acc{color:var(--acc)} .dim{color:var(--dim)}
+  .vio{color:var(--vio)}
+  .foot{margin-top:34px;color:var(--dim);font-size:16px}
+  code{color:var(--acc)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+  .grid>div{border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .grid .n{font-size:34px;font-weight:600}
+</style>
+
+<div class="card" id="c0">
+  <h1>autoheal</h1>
+  <div class="sub">Self-healing web extraction — detecting the scraper failure that nothing else catches.</div>
+  <div class="rule"></div>
+  <div style="font-size:21px;line-height:1.7">
+    perceive <span class="dim">→</span> diagnose <span class="dim">→</span> patch
+    <span class="dim">→</span> verify <span class="dim">→</span> remember
+  </div>
+  <div class="foot">micro1 Agentic Workflows Hackathon · six frozen sites · fully offline · every number reproducible</div>
+</div>
+
+<div class="card" id="c1">
+  <h2>Scrapers fail in three ways. Only one is handled today.</h2>
+  <table>
+    <tr><th>failure</th><th>today's tooling</th><th>reality</th></tr>
+    <tr><td>The request fails</td><td class="dim">retries, alerts</td><td class="ok">solved</td></tr>
+    <tr><td>The selector matches nothing</td><td class="dim">fill-rate alarms</td><td class="ok">mostly solved</td></tr>
+    <tr class="hi"><td><b>The selector matches the wrong node</b></td><td class="bad"><b>nothing</b></td>
+        <td class="bad"><b>the expensive one</b></td></tr>
+  </table>
+  <div class="foot">No exception. No empty result. No dropped rows. Fill rate stays at one hundred percent
+    and every value is wrong — for as long as it takes a human to notice.</div>
+</div>
+
+<div class="card" id="c2">
+  <h2>Six sites, thirty breakages, same gates, same frozen truth.</h2>
+  <table>
+    <tr><th>metric</th><th>static scraper</th><th>one-shot LLM</th><th>autoheal</th></tr>
+    <tr class="win"><td><b>recovery</b></td><td class="dim">0.00</td><td>0.63</td><td class="ok"><b>0.87</b></td></tr>
+    <tr><td>mean F1 after breakage</td><td class="dim">0.29</td><td>0.795</td><td class="ok"><b>0.914</b></td></tr>
+    <tr><td>locators that fail the pre-break page</td><td class="dim">—</td><td class="bad">34 / 94</td><td class="ok"><b>0</b></td></tr>
+    <tr><td>tokens</td><td class="dim">0</td><td class="bad">589,329</td><td class="ok"><b>0</b></td></tr>
+    <tr><td>silent failures detected</td><td class="dim">0</td><td class="dim">—</td><td class="ok"><b>26 / 26</b></td></tr>
+    <tr><td>false alarms on healthy pages</td><td class="dim">—</td><td class="dim">—</td><td class="ok"><b>0 / 48</b></td></tr>
+  </table>
+  <div class="foot">Exact McNemar over the 30 paired cases: <span class="acc">p = 0.0156</span>.
+    Autoheal wins seven that the baseline loses; the baseline wins none.</div>
+</div>
+
+<div class="card" id="c3">
+  <h2>What actually made the difference</h2>
+  <div class="grid">
+    <div><div class="n ok">0.87→0.13</div><div class="dim">recovery, without known-good values as the
+      supervision signal. The largest effect by far.</div></div>
+    <div><div class="n acc">1 in 6</div><div class="dim">decisions reach a model. Memory resolves half;
+      the deterministic ranker settles the rest.</div></div>
+    <div><div class="n vio">10 of 11</div><div class="dim">modules never call a model. The agent is the
+      small, constrained part.</div></div>
+  </div>
+  <div class="foot" style="margin-top:30px">
+    Two ablations came back null and are published as nulls. The cycles-to-recover chart we planned was
+    retired: cycles are flat at one. <span class="acc">Every claim here is regenerable with
+    <code>make all</code></span> — offline, no API key, byte-identical across seeds.
+  </div>
+</div>
+
+<script>
+  const n = new URLSearchParams(location.search).get('card') || '0';
+  const el = document.getElementById('c' + n);
+  if (el) el.classList.add('on');
+  window.__card = (i) => {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('on'));
+    document.getElementById('c' + i).classList.add('on');
+    return i;
+  };
+</script>

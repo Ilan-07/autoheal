@@ -29,52 +29,80 @@ HERE = pathlib.Path(__file__).resolve().parent
 BUILD = HERE.parent / "build"
 AUDIO, FRAMES = BUILD / "audio", BUILD / "frames"
 OUT = HERE / "autoheal-demo.mp4"
-VOICE, RATE = "Samantha", 178
+# Only five voices are genuinely installed on a stock macOS (Samantha, Daniel,
+# Karen, Moira, Tessa); every other name silently falls back to one default.
+# Daniel reads technical prose the least mechanically of those, and a slower rate
+# with explicit pauses between sentences does more for naturalness than the voice
+# choice does. A downloaded Premium voice would beat all of them -- see README.
+VOICE, RATE = "Daniel", 152
+PAUSE_MS = 300          # inserted at sentence boundaries
+PARA_MS = 520           # inserted between segments
 
-# (event index to show, narration). The index is a state of demo/replay.html.
-SEGMENTS: list[tuple[int, str]] = [
-    (2, "This is a scraper that ran fine yesterday. Overnight, the site added a promoted "
-        "item above every quote. You can see them on the left. Each one begins with the word "
-        "Sponsored."),
-    (2, "Here is what the scraper reports. Ten records. One hundred percent fill rate. Zero "
-        "errors raised. Every dashboard you own is green."),
-    (2, "And every value is wrong. It is reading Sponsored, Albert Einstein, where the author "
-        "is Albert Einstein. F one against ground truth is zero point three three. Nothing "
-        "threw an exception. Nothing retried. A pipeline like this writes garbage for three "
-        "weeks and nobody finds out."),
-    (7, "Autoheal does not wait for an exception, because there is not one. It compares this "
-        "run against a baseline of healthy runs. The signal that fires hardest is match count. "
-        "The locator now matches two nodes per record where it used to match one. The runtime "
-        "already knew that, and was throwing it away."),
+# (frame, narration). `frame` is an int -> a state of demo/replay.html, or
+# "cardN" -> a title card from demo/cards.html.
+SEGMENTS: list[tuple[object, str]] = [
+    # --- intro: set the problem up before showing anything
+    ("card0", "This is Autoheal, a self healing web extraction system. Anyone running scrapers in "
+              "production has the same problem. You do not control the sites you extract from, "
+              "nobody tells you when they change, and the extractors are your product."),
+    ("card1", "Scrapers fail in three ways, and only one is handled well today. The request fails, "
+              "and you retry. The selector matches nothing, and a fill rate alarm catches it. But "
+              "when the selector matches the wrong node, nothing catches it at all. Here is what "
+              "that looks like."),
+
+    # --- act I: the silent failure
+    (2, "This scraper ran fine yesterday. Overnight the site added a promoted item above every "
+        "quote. You can see them on the left, each beginning with the word Sponsored."),
+    (2, "Here is what the scraper reports. Ten records. One hundred percent fill rate. Zero errors. "
+        "Every dashboard you own is green."),
+    (2, "And every value is wrong. It reads Sponsored, Albert Einstein, where the author is Albert "
+        "Einstein. F one against ground truth is zero point three three. Nothing threw. A pipeline "
+        "like this writes garbage for weeks before anyone finds out."),
+
+    # --- act II: the heal
+    (7, "Autoheal does not wait for an exception, because there is not one. It compares this run "
+        "against a baseline of healthy runs. The signal firing hardest is match count. The locator "
+        "now matches two nodes per record where it used to match one."),
     (10, "It then takes yesterday's known good values and finds them in today's page. Eight "
-         "candidate locators, and each one is actually executed against every record. Not "
-         "guessed. Measured. How many known values it recovers, how robust the addressing "
-         "style is, and whether it still works on the page that worked before."),
-    (11, "The winner excludes the impostor by the class it carries and the real node does not. "
-         "That is the fix a human would write. No marker name appears anywhere in the repair "
-         "code. It is read off the page."),
-    (16, "Three gates, all mandatory. Recovery. Regression, which re-runs the patched spec "
-         "against the page that still worked, and is what separates a repair from an overfit. "
-         "And clearance. The monitor has to go quiet."),
-    (18, "F one goes from zero point three three to one point zero, in one cycle, using zero "
-         "tokens. No model was called. The deterministic ranker settled it."),
-    (17, "And look at the patch. The new locator goes in at tier zero, and the old one is "
-         "demoted, not deleted, because sites A B test and revert."),
-    (22, "Now a different site, a shop, with the same class of breakage. Note the marker is "
-         "different here. Nothing is hardcoded. Memory holds two episodes, both from the quotes "
-         "site. Nothing from this one."),
-    (32, "Same break, run twice. Without memory, two model calls and {ablated_tokens} tokens. "
-         "With the episode the other site left behind, zero calls and zero tokens. Same repair, "
-         "same F one. Memory does not make it smarter. It makes it cheaper."),
-    (32, "Across six sites and thirty breakages. A static scraper recovers zero. A one shot "
-         "language model, given the whole page, recovers zero point six three. Autoheal "
-         "recovers zero point eight seven, significant at p equals zero point zero one six."),
-    (32, "The one shot baseline burned five hundred and ninety thousand tokens, and thirty six "
-         "percent of the locators it chose do not work on the page that worked yesterday. "
-         "Autoheal used zero tokens and produced no overfits."),
-    (32, "Ten of the eleven modules never call a model. That is the point. The agent is the "
-         "small, constrained part of a mostly deterministic system."),
+         "candidates, each one actually executed against every record. Not guessed. Measured."),
+    (11, "The winner excludes the impostor by the class it carries and the real node does not. That "
+         "is the fix a human would write, and no marker name appears anywhere in the repair code."),
+    (16, "Three gates, all mandatory. Recovery. Regression, which re-runs the patch against the page "
+         "that still worked and is what separates a repair from an overfit. And clearance."),
+    (18, "F one goes from zero point three three to one point zero, in one cycle, using zero tokens. "
+         "No model was called."),
+    (17, "And the old locator is demoted, not deleted, because sites A B test and revert."),
+
+    # --- act III: memory
+    (22, "A different site now, with the same class of breakage. Note the marker differs. Nothing is "
+         "hardcoded. Memory holds two episodes, both from the previous site, nothing from this one."),
+    (32, "Same break, run twice. Without memory, two model calls and {ablated_tokens} tokens. With "
+         "the episode the other site left behind, zero calls and zero tokens. Memory does not make "
+         "it smarter. It makes it cheaper."),
+
+    # --- outro
+    ("card2", "Here is the whole comparison. A static scraper recovers nothing. A one shot language "
+              "model given the entire page recovers zero point six three, and thirty six percent of "
+              "the locators it picks do not work on the page that worked yesterday. Autoheal "
+              "recovers zero point eight seven, using zero tokens, with no overfits."),
+    ("card3", "The change that mattered most was giving the agent yesterday's known good values as "
+              "its supervision signal. Remove it and recovery collapses to zero point one three."),
+    ("card3", "The experiment we removed was the cycles to recover chart. We planned it as a "
+              "headline, then measured cycles flat at one, so we retired the claim rather than "
+              "massage it. Two ablations came back null and are published as nulls."),
+    ("card3", "Ten of the eleven modules never call a model. That is the point. Everything you have "
+              "seen regenerates with one command, offline, with no API key. Thanks for watching."),
 ]
+
+
+def _natural(text: str) -> str:
+    """Give the synthesiser somewhere to breathe.
+
+    Legacy macOS voices run sentences together, which is most of what makes them
+    sound mechanical. An explicit pause at each sentence boundary costs nothing
+    and does more for listenability than swapping between the voices available."""
+    text = text.replace(". ", f". [[slnc {PAUSE_MS}]] ")
+    return text + f" [[slnc {PARA_MS}]]"
 
 # Spoken claims that must match the recorded run, so narration cannot drift.
 def _check_against_recording() -> list[str]:
@@ -128,15 +156,15 @@ def build_audio() -> int:
     FRAMES.mkdir(parents=True, exist_ok=True)
     total = 0.0
     plan = []
-    for i, (idx, text) in enumerate(SEGMENTS):
+    for i, (frame, text) in enumerate(SEGMENTS):
         aiff = AUDIO / f"{i:02d}.aiff"
-        text = text.format(**_spoken_numbers())
+        text = _natural(text.format(**_spoken_numbers()))
         subprocess.run(["say", "-v", VOICE, "-r", str(RATE), "-o", str(aiff), text], check=True)
         d = _dur(aiff)
         total += d
-        plan.append({"segment": i, "event_index": idx, "seconds": round(d, 2),
+        plan.append({"segment": i, "source": frame, "seconds": round(d, 2),
                      "frame": str(FRAMES / f"{i:02d}.png")})
-        print(f"  {i:02d}  event {idx:2}  {d:5.1f}s  {text[:58]}...")
+        print(f"  {i:02d}  {str(frame):>6}  {d:5.1f}s  {text[:56]}...")
     (BUILD / "plan.json").write_text(json.dumps(plan, indent=1))
     print(f"\n  {len(SEGMENTS)} segments, {total/60:.1f} min total (brief allows 5)")
     print(f"  now capture one PNG per segment into {FRAMES}/NN.png at the event index shown")
