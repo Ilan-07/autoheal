@@ -2,470 +2,479 @@
 
 [![ci](https://github.com/Ilan-07/autoheal/actions/workflows/ci.yml/badge.svg)](https://github.com/Ilan-07/autoheal/actions/workflows/ci.yml)
 
-Scrapers don't fail loudly. A site redesigns, selectors match the wrong node, and the pipeline
-writes plausible garbage for three weeks. Autoheal's job isn't extraction — it's **repair**:
+**A scraper that breaks loudly is a nuisance. A scraper that breaks quietly is a data-quality
+incident you find out about three weeks later.** Autoheal detects the quiet kind and repairs it,
+with the model doing the small part.
 
 ```
 perceive → diagnose → patch → verify → remember
 ```
 
-## Status (2026-08-30)
-
-**Stage 2 of 3 complete — the loop closes and heals end-to-end.**
-The rule for this build is that nothing agent-shaped gets written until breakage is measurable.
-Stage 1 built the ruler; stage 2 built the loop and is scored by it.
-
-| Module | State |
+| | |
 |---|---|
-| `autoheal/spec.py` — versioned extractor specs | ✅ |
-| `autoheal/runtime.py` — spec × DOM → records + provenance | ✅ |
-| `autoheal/metrics.py` — alignment-free multiset P/R/F1 | ✅ |
-| `autoheal/perceive.py` — 10 health signals → `BreakageReport` | ✅ |
-| `autoheal/diff.py` — DOM alignment + change classification | ✅ |
-| `autoheal/localize.py` — known values → ranked candidate locators | ✅ |
-| `autoheal/patch.py` — additive, bounded, reversible spec versioning | ✅ |
-| `autoheal/verify.py` — G1 recovery · G2 regression · G3 clearance | ✅ |
-| `autoheal/memory.py` — store, symptom fingerprints, episode recall | ✅ |
-| `autoheal/diagnose.py` — memory → ranker → (optional) model | ✅ |
-| `autoheal/loop.py` — the orchestrator, with quarantine | ✅ |
-| `eval/` — B0 baseline, perceive eval, end-to-end heal eval, 2 drift lockfiles | ✅ |
-| `eval/ablations.py` — −memory · −regression · −diff · −stack · −known-good | ✅ |
-| `tests/` — 375 tests over a six-site corpus | ✅ |
-| CI — verify · test · hash-seed reproducibility · 2 drift gates · detection/FPR gate | ✅ |
-| `eval/b1_oneshot.py` — one-shot baseline vs. the loop | ✅ |
-| `autoheal/diagnose.py` — Anthropic **and** Ollama providers, schema-constrained | ✅ |
-| `demo/record.py` · `demo/replay.html` — offline, self-contained replay | ✅ |
-| recorded video | ⬜ next |
+| **Primary metric** — recovery on breakages that degraded extraction | **0.87** vs **0.63** one-shot LLM vs **0.00** static |
+| Silent failures detected | **26 / 26** |
+| False alarms on healthy pages | **0 / 48** |
+| Tokens to produce the headline result | **0** |
+| Reproducible | byte-identical across 4 seeds × 3 `PYTHONHASHSEED` values |
 
+Everything below is produced by `make all` from a clean checkout, offline, in about two minutes.
+
+---
+
+## 1. Who has this problem
+
+**Anyone who runs scrapers in production and makes decisions on the output.** Price-intelligence
+and market-research teams, data engineers maintaining ingestion pipelines, researchers with
+long-running collection jobs, and the on-call engineer who owns the pipeline at 2am.
+
+Concretely: a small data team maintaining 50–500 extractors against sites they do not control.
+Nobody on that team wrote the sites, nobody is told when they change, and the extractors are the
+team's product.
+
+## 2. The bottleneck
+
+Web extraction fails in three ways, and only one of them is handled well today.
+
+| failure | today's tooling | reality |
+|---|---|---|
+| The request fails | retries, alerts | solved |
+| The selector matches nothing | fill-rate alarms | mostly solved |
+| **The selector matches the wrong node** | **nothing** | **the expensive one** |
+
+The third case produces **no exception, no empty result and no dropped rows**. A site adds a
+struck-through "compare at" price above the real one; your `.price` selector now matches it
+first. Fill rate stays at 100%. Record count is unchanged. Every dashboard is green and every
+number is wrong.
+
+Two costs follow. **Detection latency:** nobody notices until a human eyeballs the data or a
+downstream number looks strange — routinely weeks. **Repair toil:** when it is noticed, an
+engineer opens devtools, diffs the markup, rewrites a selector, and re-runs the backfill. That
+work is unplanned, interrupt-driven, and repeats every time the site ships a redesign.
+
+This project's claim is that **the detection half is the harder and more valuable half**, and
+that once you can detect reliably, most repairs do not need a model at all.
+
+In this corpus, **6 of 61 breakages are silent** — high fill rate, wrong values, nothing thrown.
+Those are the ones a fill-rate alarm cannot see.
+
+---
+
+## 3. Quickstart
+
+```bash
+git clone <repo> && cd hack
+uv sync                 # Python 3.13, three runtime deps
+make all                # ~2 min, fully offline, no API key
 ```
-make verify      # independent ground-truth checks
-make test        # 375 tests
-make check       # fail if the committed B0 baseline no longer reproduces
-make perceive    # detection rate vs false-alarm rate (non-zero exit on either)
-make heal        # end-to-end recovery, ranker accuracy, memory ablation
-make ablations   # which parts of the design are load-bearing
-make b1          # one-shot baseline (needs a model; not reproducible)
-make check-heal  # fail if the committed healing numbers no longer reproduce
-make all         # everything
+
+`make all` runs ground-truth verification, 375 tests, the static baseline, the detection eval,
+the healing eval and both drift lockfiles. Full reproduction guide in §8.
+
+```bash
+make demo-replay        # open the recorded demo — self-contained, no server, no network
 ```
 
-CI runs all of it on every push, plus the B0 *and* healing evals under three different
-`PYTHONHASHSEED` values — the numbers below are only meaningful if they reproduce,
-and that was not true until the stage-1 audit.
+---
 
-## Results (seeds 0–3, fully offline, no model in the loop)
+## 4. The agent solution, and why each choice earns its place
 
-Every number below comes from `make all`. There is no network access and no LLM call
-anywhere in it: the ranker decides, and the model step is opt-in (see *Where the model
-actually goes*). Spread is real across-seed variance.
+An extractor is a **versioned JSON spec** interpreted by a deterministic runtime. The agent's
+output is a *patch to that spec* — never a generated selector string, never generated code.
 
-**Detection — does the monitor work?**
+### 4.1 Better context: known-good values as the supervision signal
+
+The naive framing is "here is 400KB of new HTML, fix the selector." Autoheal instead says:
+*yesterday this field returned `£24.99`; find `£24.99` in today's DOM, derive every reasonable way
+to address the node it landed in, and score each one by executing it against every record on the
+page.* The model, if it is consulted at all, chooses among ~8 pre-measured options.
+
+**Evidence it matters:** ablating it (`−known-good`) drops recovery **0.87 → 0.13**. It is by far
+the largest effect in the ablation table.
+
+### 4.2 Tools: a locator *stack*, not a selector
+
+`price` is not `.product-price`. It is an ordered stack — `[css, jsonld, regex, structural]` —
+and the first value that survives validation wins. **Which tier won is recorded.**
+
+**Evidence:** ablating it (`−stack`) leaves recovery about the same but raises the number of
+breakages that *need* a repair from 30 to 40. The stack's value is fewer repairs, not better ones.
+
+### 4.3 Verification: three mandatory gates
+
+| gate | checks |
+|---|---|
+| **G1 recovery** | re-extract on the broken page against last-known-good |
+| **G2 regression** | run the patched spec against the page that *still worked* |
+| **G3 clearance** | the health signals that fired must go quiet |
+
+G2 is the one that distinguishes a repair from an overfit. **Evidence:** it rejects nothing when
+grading our own ranker — reported below as a null result — but against the one-shot baseline it
+has **34 overfits to catch**.
+
+### 4.4 Memory: episodes keyed on symptom, not on site
+
+`episodes.jsonl` stores *symptom fingerprint → strategy class → outcome*, deliberately stripped of
+site identity, so a repair learned on one site is retrievable when a different site breaks the
+same way. Failures are stored too, so the loop does not re-propose a strategy that already lost.
+
+**Evidence:** **68% fewer** decisions need a model. Restricting recall to *other sites only* still
+gives 58% — transfer accounts for most of the saving.
+
+### 4.5 Orchestration: a loop with an honest exit
+
+Four cycles maximum, then **quarantine**: extraction pauses and a human-review card is emitted.
+Refusing is a first-class output. **This is the human checkpoint** required by ground rule 4/5 —
+no repair is ever silently accepted, and an unfixable page stops the pipeline rather than filling
+it with plausible garbage.
+
+### 4.6 Where the model actually goes
+
+Measured over a full matrix run, per field-level decision:
+
+| route | share |
+|---|---|
+| memory recall — 0 tokens | **51%** |
+| deterministic ranker decided alone | **33%** |
+| ambiguous → model | **16%** |
+
+A model is reached on roughly **one decision in six**, and only after memory and the ranker both
+decline. It returns a schema-constrained tool call choosing an index; it never sees raw HTML. If
+it proposes a widened query, that query is **re-executed** and kept only if it measures at least
+as well. A missing, unreachable, or wrong answer falls back to the ranker, and all three gates
+still run. **No model output is ever executed** — transforms come from a fixed whitelist.
+
+---
+
+## 5. Measured improvement
+
+Same 30 cases, same three gates, same frozen ground truth, same model for both agent arms.
+
+| metric | B0 static (baseline) | B1 one-shot LLM | **Autoheal** | change vs B0 |
+|---|---|---|---|---|
+| **Primary: recovery** | 0.00 | 0.63 | **0.87** | **+0.87** |
+| Mean F1 after breakage | 0.29 | 0.795 | **0.914** | +0.62 |
+| Locators that fail the pre-break page | — | 34 / 94 (36%) | **0** | — |
+| Silent failures detected | 0 | — | **26 / 26** | — |
+| False alarms on healthy pages | — | — | **0 / 48** | — |
+| Cost per repair *(tokens)* | 0 | 19,644 | **0** | — |
+| Cost per repair *(USD, Opus list rates)* | $0 | ~$0.11 | **$0** | — |
+| Wall clock per repair | n/a | 16.1 s | **< 1 s** | — |
+| Human time per repair | see below | see below | see below | — |
+
+**On the statistics.** Exact McNemar over the 30 paired cases: Autoheal wins 7 that B1 loses,
+B1 wins 0 that Autoheal loses, **p = 0.0156**. Wilson 95% CIs: 0.70–0.95 and 0.46–0.78.
+
+**On cost.** Both agent arms ran on `gpt-oss:120b-cloud`, so actual spend was **$0**. The USD
+column converts measured token counts at `claude-opus-5` list rates for comparability. Autoheal's
+published results use **zero tokens** — the deterministic path resolves everything; with the model
+enabled it spends ~1,600 tokens per call on ~1 decision in 6.
+
+**On human time — this is an estimate, not a measurement, and is labelled as such.** We did not
+run a human-baseline study. What we *did* measure is that 6 of 61 breakages are silent, so the
+honest statement is about detection latency rather than repair minutes: a silent failure is
+invisible to fill-rate alarms and is found only when someone inspects the data. Autoheal detects
+all 26 silent cases across seeds at the next extraction run. Repair time itself (open devtools,
+diff markup, rewrite selector, re-run backfill) we estimate at 15–45 minutes per field for an
+engineer familiar with the site — stated as an assumption, with no evidence behind it.
+
+### Detection, across all four seeds
 
 | | |
 |---|---|
-| genuinely degraded cases detected | **122/122** (1.00) |
-| silent failures caught (≥90% fill, <90% F1) | **26/26** (1.00) |
-| false alarms on clean + content-churned pages | **0/48** (0.00) — at warn level too |
+| genuinely degraded cases detected | **122 / 122** (1.00) |
+| silent failures caught (≥90% fill, <90% F1) | **26 / 26** (1.00) |
+| false alarms on clean + content-churned pages | **0 / 48** — at warn level too |
 
-**Repair — does the loop heal?**
+The false-alarm rate is a **build failure**, not a metric: `make perceive` exits non-zero on any
+false alarm or missed degradation. A monitor that cries wolf is worthless.
 
-| | B0 static | Autoheal |
-|---|---|---|
-| recovery rate on cases needing repair | 0.00 *by construction* | **0.83 – 0.87** |
-| mean F1 after breakage | 0.289 – 0.312 | **0.902 – 0.916** |
-| mean cycles-to-recover | n/a | **1.00** (cap 4) |
-| honest quarantines | n/a | 0.13 – 0.17 |
-| healthy cases damaged by the loop | n/a | **0** |
-
-Over **30–31 cases needing repair per seed**, on a corpus of six sites.
-
-Every quarantine across all four seeds is a `content_deferred` case on a page that ships
-no structured data — the values genuinely are not in the DOM any more. Refusing is the
-correct answer there, and the loop emits a human-review card saying so rather than
-inventing a locator.
-
-**The ranker, with no model at all** — `PLAN.md` calls this the make-or-break number:
+### The ranker alone, with no model at all
 
 | | |
 |---|---|
 | top-1: a fully-recovering locator is the ranker's first choice | **0.80 – 0.81** |
 | top-3 | 0.82 – 0.83 |
 
-Top-1 and top-3 nearly coincide by construction — recovery dominates the score, so a
-fully-recovering candidate sorts to rank 0. The number that carries information is
-whether such a candidate is generated at all; the ~24% where it is not is dominated by
-`content_deferred`, where no locator exists to find.
+### Ablations — including the two that did not flatter us
 
-**Memory — measured, not asserted, and smaller than we wanted.** Sites are visited in a
-seed-dependent order so a trend cannot be an ordering artefact.
+`make ablations`. Every arm is deterministic and offline.
 
-| recall scope | model calls needed | reduction | recovery |
+| arm | recovery | cases needing repair | model calls |
 |---|---|---|---|
-| any prior episode | **21 – 47** | **28% – 68%** | 0.83 – 0.87 |
-| *different site only* (transfer) | 27 | **58%** | 0.87 |
-| memory ablated | 65 – 71 | — | 0.83 – 0.87 |
+| full | **0.87** | 30 | 21 |
+| −memory | 0.87 | 30 | 65 |
+| −memory (cross-site recall only) | 0.87 | 30 | 27 |
+| −regression | 0.87 | 30 | 29 |
+| −diff | 0.87 | 30 | 21 |
+| −stack | 0.85 | **40** | 24 |
+| **−known-good** | **0.13** | 30 | 322 |
 
-Memory does not make the loop more *accurate* — recovery is identical in every arm — it
-makes it *cheaper*. Episodes are keyed on a **strategy class** (`structured_data`,
-`semantic_attr`, `exclusion`, `positional`, …) rather than a concrete locator kind, so that
-a lesson can move between sites at all; keying on the kind scored 12%.
+**−regression is a null result.** Removing old-page compatibility from both the ranking term and
+the G2 gate produces **zero** overfits. The reason is structural: candidates are ranked on
+reproducing *known-good* values, and those values came from the pre-break page. G2 rejected a real
+overfit during development, and it catches 34 in the B1 baseline — but on our own ranker it is
+currently not earning its keep, and we do not claim otherwise.
 
-**This is the number that changed most when the corpus grew, and the direction is worth
-being explicit about.** At four sites, cross-site transfer was 19% against 49% for
-unrestricted recall — transfer was real but the smaller half, and the README said so. At
-six sites it is **58% against 68%: transfer now accounts for most of the saving.** The cause
-is not tuning. At four sites only one site shipped structured data, so a `structured_data`
-episode had nowhere to transfer to; `jobs` gave it a second. The earlier number was
-measuring a corpus limitation and reporting it as a property of the method.
+**−diff is also null for recall,** and the mechanism matters: with classification off, every
+episode keys on `UNKNOWN`, so that fingerprint component matches *trivially* rather than being
+lost. What it shows is that the fired-signal set alone suffices to key episodes here.
 
-The eval used to print that conclusion as a hardcoded sentence, which stayed "the smaller
-half" while the numbers said otherwise. It is now derived from the measurement, because a
-conclusion baked into a print statement is a claim nothing can falsify. The run-to-run
-spread (24%–65%) is wide and honestly reported: how much memory saves depends heavily on
-the order sites happen to break in.
+### The challenging case
 
-## B1 — the one-shot baseline
+`content_deferred` on `books`: the page's visible text is removed and `books` ships no structured
+data, so the values genuinely are not in the DOM. **Autoheal quarantines rather than guessing.**
+That is the correct answer, and it is what the remaining 13% of non-recovered cases are.
+[Full trajectory →](trajectories/03-quarantine-human-checkpoint.md)
 
-`make b1`. Same 30 cases, same three gates, same frozen truth. The only difference is
-what the model receives: B1 gets the raw broken page, Autoheal gets ~8 candidates that
-have each already been executed against every record on it. Both ran on
-`gpt-oss:120b-cloud`.
+---
 
-| | B0 static | B1 one-shot | **Autoheal** |
+## 6. Improvement Changelog
+
+Each row is a real iteration with the evidence that drove the next decision. Evidence is the same
+eval throughout: recovery on degraded cases, scored against frozen ground truth.
+
+| stage | what we tried and why | evidence | decision / learning |
 |---|---|---|---|
-| recovery, 30 cases | 0.00 | 0.63 | **0.87** |
-| mean F1 after repair | 0.29 | 0.795 | **0.914** |
-| tokens | 0 | **589,329** | **0** |
-| locators that fail the pre-break page | — | **34/112 (30%)** | **0** |
+| **Baseline (B0)** | Static extractor, no healing. Establish the floor before writing any agent code. | recovery **0.00**, mean F1 0.65 over 61 live cases, 6 silent failures | Kept as the floor. The eval existed before the agent, on purpose. |
+| **Iteration 1 — perceive** | Nine health signals from runtime provenance, because a broken scraper does not raise. | detection 30/30, **0 false alarms** | Kept. |
+| **Iteration 2 — a tenth signal** | First calibration scored our own flagship decoy case at **0.42 (warn)**. A decoy makes the locator match *two* nodes where it matched one, and the runtime already knew. | decoy → **0.85–0.91 critical** | Kept. Added `match_count`. The eval told us the monitor was weak on the case we lead with. |
+| **Iteration 3 — localize + rank** | Turn known-good values into candidates, execute each against every record. | ranker top-1 **0.75** | Kept — this is the load-bearing component. |
+| **Iteration 4 — bug found by eval** | Every *numeric* field silently produced zero candidates: `money` returns floats, so `37732000.0` normalised to `"377320000"` and never matched page text. | recovery **0.50 → 0.75** | Fixed. No exception anywhere — the project's own failure mode, in our code. |
+| **Iteration 5 — exclusion selectors** | G2 kept rejecting the ranker's decoy repair (a positional path: perfect today, wrong on the old page). Correct rejection, fixable cause. | recovery **0.75 → 0.80** | Kept. Generate `span.text:not(.compare-at)` — the fix a human writes. |
+| **Iteration 6 — G3 waiver** | G3 could never clear on a patched field: tier/multiplicity baselines describe a locator that no longer exists. | recovery **0.80 → 0.85** | Kept, scoped to patched fields only. An untouched field with a tier shift still blocks. |
+| **Iteration 7 — memory transfer** | Recall keyed on concrete locator kind made it a same-site cache. Re-keyed on *strategy class*. | cross-site saving **12% → 19%** | Kept. |
+| **Iteration 8 — ablations** | −memory, −regression, −diff, −stack, −known-good. | −known-good **0.87 → 0.13**; −regression and −diff **null** | Kept all, **including the two nulls**. Published as nulls. |
+| **Iteration 9 — B1 baseline** | The comparison the brief asks for. First run scored B1 at **0.10**. | on inspection: 5 cases at F1 1.00 failing only G3 | **Our bug.** B1 was never offered the record selector. Corrected to 0.55, then 0.60 after retrying transport errors. |
+| **Iteration 10 — hardening** | Crash sweep: 540 mutated pages + 12 adversarial inputs × 7 entry points. | 4 bugs, incl. **every entry point crashing on an empty page** | Fixed. An empty page now reads as zero records and quarantines. |
+| **Iteration 11 — corpus 4 → 6 sites** | Power analysis said the result was underpowered. Added a site with **no** structured data and one with a date field. | first result got **worse**: p 0.0625 → 0.18 | B1 won 2 cases the small sample hid. Investigated rather than reverted. |
+| **Iteration 12 — the two bugs those cases exposed** | (a) JSON-LD record roots crashed every DOM locator. (b) Candidate matching compared strings, so known-good `91` never matched `"91 points"`. | recovery **0.80 → 0.87**, **p = 0.0156** | Kept. The corpus earned its place by finding bugs, not by adding sample size. |
+| **Final** | Everything above, six sites, 375 tests. | **0.87 vs 0.63 vs 0.00**, 0 tokens, 0 overfits | Main contribution: **known-good values as supervision** (§4.1). |
 
-**The difference is statistically significant.** Exact McNemar over the 30 paired
-cases: autoheal wins 7 that B1 loses, B1 wins 0 that autoheal loses, **p = 0.0156**.
-Wilson 95% CIs are 0.70–0.95 and 0.46–0.78.
+### Experiments we removed or retired
 
-That took two goes to establish honestly. At four sites the result was 5–0
-discordant, p = 0.0625 — *not* significant, and with only five discordant pairs
-0.0625 is the smallest p-value arithmetically reachable, so it could not have been.
-Expanding the corpus first made it **worse** (p = 0.18): B1 won two cases the
-smaller sample had hidden. Those two cases were autoheal bugs, not noise — an
-ancestor-marked decoy and a whole class of candidates that string matching missed.
-Fixing them is what produced 7–0. The corpus earned its place by finding bugs, not
-by adding sample size.
+- **"Cycles-to-recover trends down."** Planned as a headline chart. Cycles are **flat at 1.00** —
+  every case heals on the first cycle or runs to the cap. The claim was retired, not massaged.
+- **A hardcoded conclusion in the ablation output.** The eval *printed* "transfer is the smaller
+  half." True at four sites (19% vs 49%), false at six (58% vs 68%), and nothing went red. It is
+  now derived from the measurement. **A conclusion baked into a print statement is a claim nothing
+  can falsify.**
+- **`temperature=0`** was specified in the original plan for determinism. It is removed on Claude
+  Opus 5 and returns a 400. Reproducibility comes from the deterministic ranker instead.
 
-B1 is not reproducible and it swings: runs of the identical configuration gave
-0.55 / 0.60 / 0.63 recovery. Autoheal's column is byte-identical across runs and
-across three `PYTHONHASHSEED` values, which is the asymmetry the design argues for.
+---
 
-**The durability gap is the result, not the recovery gap.** B1's chosen addressing styles
-were `hashed_class 35 · stable_class 22 · positional 21 · exclusion 16 · semantic_attr 11 ·
-bare_tag 5 · regex_shape 2` — **50% positional paths or hashed CSS-in-JS classes**, the two
-least durable styles, the ones `prior()` ranks last. It repeatedly reached for the hashed class the
-mutation had just minted: perfect today, worthless at the next deploy. That is what the
-28% pre-break-page failure rate measures.
+## 7. Agent trajectories
 
-This also rescues the `−regression` null result below. G2 rejects nothing when it is
-grading our own ranker, because the ranker does not propose overfits. Against B1 it has
-**34 to catch**. The gate is not redundant; our ranker just made it look that way.
+Representative end-to-end runs for **every agent used**, captured live — prompts and replies are
+verbatim, not reconstructions. Regenerate with `make trajectories`.
 
-**B1 was corrected twice, both times in its favour.** The first run scored it at 0.10
-because the harness never offered it the record selector — five cases had F1 1.00, G1 pass,
-G2 pass, and failed G3 purely because `<record>` stayed critical, while Autoheal repairs
-roots as a matter of course. Two more were counted as failures when they were transport
-errors at 0 tokens. Both were our bugs. A baseline that has not been attacked for
-unfairness is not a baseline.
+| trajectory | agent | shows |
+|---|---|---|
+| [01 — silent failure, healed](trajectories/01-silent-failure-healed.md) | Autoheal repair loop | detection, ranked candidates, three gates, additive patch |
+| [02 — memory transfers across sites](trajectories/02-memory-transfers-across-sites.md) | Autoheal repair loop | recall from another site resolving a decision for **0 tokens** |
+| [03 — quarantine](trajectories/03-quarantine-human-checkpoint.md) | Autoheal repair loop | an honest refusal and the **human checkpoint** |
+| [04 — baseline B1](trajectories/04-baseline-b1-one-shot.md) | One-shot baseline agent | the same repair from raw HTML, for comparison |
 
-**The model step is not currently earning its keep either.** Turning the LLM on inside
-Autoheal left recovery unchanged and moved mean F1 by less than a point — no
-measurable gain for 43,587 tokens. On this corpus the deterministic ranker does the work.
-That is a claim in the project's favour, not against it: the headline number does not
-depend on a model, and we can show it.
+---
 
-## Ablations — including the ones that didn't flatter us
+## 8. Reproduction guide
 
-`make ablations`. Every arm is deterministic and offline; none calls a model.
+Written for someone starting from a clean environment.
 
-| arm | recovery | F1 after | quarantined | model calls |
-|---|---|---|---|---|
-| full | **0.87** | 0.914 | 0.13 | 21 |
-| −memory | 0.87 | 0.914 | 0.13 | 65 |
-| −memory (cross-site only) | 0.87 | 0.914 | 0.13 | 27 |
-| −regression | 0.87 | 0.914 | 0.13 | 29 |
-| −diff | 0.87 | 0.914 | 0.13 | 21 |
-| −stack | 0.85 | 0.900 | 0.15 | 24 |
-| **−known-good** | **0.13** | **0.396** | **0.87** | 322 |
-
-**−known-good is the one that moves recovery, and it moves it a long way.** This is Bet 3
-tested causally rather than asserted: withhold the last-known-good values and candidates
-must be enumerated from every text-bearing node in the record instead of the ~3 carrying a
-value we already know, with `recovery` dropped from the ranking. Recovery falls 0.87 → 0.13,
-F1 0.914 → 0.396, and 87% of cases quarantine. The 4 that still heal are the ones where a
-fallback already in the spec happens to be right — which needs no supervision at all.
-
-It is also the arm that took three attempts to make honest. Withholding the values from
-*generation* was not enough: `recovery` was still a tiebreaker in the sort, the shape-derived
-regexes were still built from the values, and `survives_old` was computed as
-recovery-of-known-good on the pre-break page — so regression-awareness was quietly handing
-the signal back. The test that found all three asserts the blind ranking is **invariant to
-corrupting the known-good values**, which is the only version of this claim that can't be
-fooled.
-
-**This is not the B1 one-shot baseline** and is not offered as one. It measures the
-information asymmetry that makes the model's job small, not a model's accuracy at reading
-HTML. B1 still wants a real run.
-
-**−stack quantifies the free-degradation claim.** Removing the fallback tiers doesn't make
-repairs much worse — it makes **10 more breakages need a repair at all** (40 cases instead
-of 30). That is the locator stack's actual value: fewer repairs needed, not better ones.
-
-**−regression is a null result and is published as one.** Removing old-page compatibility
-from *both* the ranking term and the G2 gate produces zero overfits. The reason is
-structural: candidates are ranked on how many *known-good* values they reproduce, and those
-values came from the pre-break page, so a high-recovery candidate is already very likely to
-work there. G2 did reject a real overfit during development — a positional path that scored
-1.00 on the decoy'd page and pointed at the wrong node on the old one — but once the
-generator learned to emit exclusion selectors (`span.text:not(.compare-at)`), the gate had
-nothing left to catch. It stays, because it is free and it is the check that would catch a
-coincidental positional match. We do not claim it is currently earning its keep.
-
-**−diff is also null for recall**, and the mechanism matters before reading anything into
-it: with classification off, *every* episode keys on `UNKNOWN`, so the diff component of the
-fingerprint matches trivially rather than being lost. What the arm actually shows is that
-the fired-signal set alone is enough to key episodes on this corpus. `diff.py` still earns
-its place as evidence in the repair prompt and on the dashboard — just not here.
-
-## B0 static baseline (seeds 0–3)
-
-Each seed is byte-reproducible; the spread below is real across-seed variance,
-not run-to-run noise.
+### Requirements
 
 | | |
 |---|---|
-| clean pages, mean F1 | **1.000** — no false breakage |
-| after breakage, mean F1 | **0.650** over 61 live cases |
-| cases needing real repair | **30–31 / 61** |
-| absorbed free by the locator stack | 10 / 61 |
-| silent failures (≥90% fill, <90% F1) | 6–7 |
-| recovery | **0.00** — a static scraper cannot repair itself |
+| Python | 3.13 (3.13.2 used) |
+| Package manager | [`uv`](https://docs.astral.sh/uv/) 0.10.7 |
+| Runtime deps | `lxml` 6.1.2, `pydantic` 2.13.5, `cssselect` 1.5.0 |
+| Network | **none required** for any result in §5 |
+| API key | **none required** |
+| Disk | ~40 MB |
 
-## Design commitments
+### Data
 
-**Extractors are versioned data, not prompts.** A spec is JSON interpreted deterministically.
-The agent emits a *patch to a spec*. A healthy site costs nothing to scrape, repairs are
-diffable, and no model output is ever executed — transforms come from a whitelist
-(`runtime.TRANSFORMS`).
+All six sites are **frozen in the repo** under `eval/sites/`. `books` and `quotes` are pages from
+[toscrape.com](https://toscrape.com), a sandbox published expressly for scraper testing.
+`wikitable` is Wikipedia markup (CC BY-SA). `shop`, `hn` and `jobs` are **synthetic**, generated by
+committed seeded scripts. No private data, no credentials, nothing fetched at eval time.
 
-**Each field is a stack of locators, not one selector.** `price` is
-`[css, jsonld, regex, structural]`; first value that survives validation wins, and the winning
-tier is recorded. Two consequences: some breakages heal at zero cost (10/61 above), and a
-**tier shift is a leading indicator of silent breakage** — it fires even when the value still
-looks fine.
+### Commands
 
-**Validation failure falls through, it does not emit.** A value that fails its validator is
-treated as a miss so the stack keeps walking. Emitting it *is* the failure mode.
+```bash
+uv sync                                # install, ~10s
 
-**Scoring is alignment-free and precision-sensitive.** Fields are compared as multisets against
-frozen ground truth, so reordering is free but inventing a value is punished. A fill-rate metric
-scores the decoy case 1.00; F1 scores it 0.60.
+make verify        # 1s    independent ground-truth checks (not the tautological F1 test)
+make test          # 66s   375 tests
+make eval          # <1s   B0 static baseline  -> results/seed{N}/b0_static.json
+make check         # 1s    fails if the committed B0 numbers no longer reproduce
+make perceive      # 1s    detection vs false alarms; NON-ZERO EXIT on either
+make heal          # 24s   recovery, ranker accuracy, memory ablation
+make check-heal    # 24s   fails if the committed healing numbers no longer reproduce
+make ablations     # ~4m   which components are load-bearing, including nulls
+make all           # ~2m   verify + test + check + perceive + heal + check-heal
+```
 
-## The eval is built not to flatter us
+### Expected output
 
-- **Mutators never see the spec.** They locate the repeating record container heuristically and
-  deform it. We are not breaking exactly what we know how to fix.
-- **`class_rename` targets *component* classes** (`price_color`), identified as tokens carried by
-  exactly one text-bearing element per record — not layout chrome (`col-md-3`). An earlier
-  frequency-ranked version renamed Bootstrap grid classes and every extractor kept working, which
-  would have made the mutation look survivable when it wasn't.
-- **`jsonld_drop` exists to defeat our own fallbacks.** Without it, pages with good structured
-  data survive almost any redesign via tier 2 and the repair loop is never exercised.
-- **`decoy_injection` is the flagship.** It clones a field node, gives it a plausible wrong value
-  (a struck-through "compare at" price — a real and common redesign), and inserts it ahead of the
-  real one. Nothing errors. Fill rate stays 100%. Every number is quietly wrong.
-- **Compound recipes.** A real redesign is never one edit; `full_rewrite` takes all four sites to
-  zero records.
+`make all` ends with two lockfile confirmations. The headline numbers:
 
-## Where the model actually goes
+```
+RECOVERY             : 0.87   (B0 static baseline: 0.00 by construction)
+mean F1              : 0.289 -> 0.914
+detection rate       : 1.00  (30/30)
+FALSE ALARM (fire)   : 0.00  (0/12)
+healthy-case damage  : 0
+```
 
-Ten of the eleven modules are marked `[no LLM]` in `PLAN.md`, and the results above were
-produced with the model switched off entirely. The model step exists, is
-schema-constrained, and is deliberately hard to reach:
+Any deviation fails `make check` / `make check-heal` rather than passing quietly.
 
-1. **Memory first.** If a prior episode with a matching symptom fingerprint proposes a
-   strategy, and the ranker has already validated a candidate of that shape *on this page*,
-   the repair is made with zero tokens. Memory proposes; the runtime disposes.
-2. **The ranker next.** If one candidate wins clearly (score gap ≥ 0.08 and full recovery),
-   it is taken. Paying Opus to agree with an unambiguous winner is the reflex this design
-   exists to avoid.
-3. **The model only on a genuine tie**, and even then it receives ~8 candidates that have
-   each already been *executed* against every record on the page — a few thousand tokens,
-   not a few hundred thousand. It returns a `choose_locator` tool call, never free text.
-   It may also propose a generalisation of the query it picked; that generalisation is
-   re-executed and accepted only if it measures at least as well. The model can pick and
-   propose. It cannot assert.
+### Optional: the parts that need a model
 
-Whatever it returns still has to pass all three gates, so a bad answer costs a cycle
-rather than producing a wrong repair. `PLAN.md` specifies `temperature=0` for
-determinism — that parameter was removed on Claude Opus 5 and now returns a 400, so it is
-not used; reproducibility comes from the deterministic ranker instead, which is why the
-published numbers can be re-run offline.
+Not required to reproduce anything in §5. Both arms used a **free** model.
 
-## Stage-2 notes
+```bash
+ollama pull gpt-oss:120b-cloud                     # or any tool-calling model
+export AUTOHEAL_LLM=ollama:gpt-oss:120b-cloud      # also accepts anthropic[:model]
 
-Five things the eval forced, recorded because each one changed a number:
+make b1              # ~10m   B1 one-shot baseline  (NOT reproducible: a model decides it)
+make trajectories    # ~2m    regenerate the four agent trajectories
+make demo            # ~40s   re-record the demo
+```
 
-**The monitor was weak on our own flagship case, so it grew a tenth signal.** `PLAN.md`
-specifies nine. The first calibration run scored the decoy — the case the whole project
-leads with — at 0.42, a *warn*, on value drift and novelty alone. A decoy does not only
-change the value; it makes the locator match **two** nodes where it matched one, and the
-runtime already knew that and was discarding it. `match_count` (signal 10) promotes the
-decoy to 0.85–0.91 critical on every site where it applies. Match multiplicity is recorded
-as provenance only — it never changes which value is extracted.
+B1 is explicitly **not reproducible** and it swings: runs of the identical configuration gave
+0.55 / 0.60 / 0.63 recovery. It is excluded from the drift lockfiles for that reason. Autoheal's
+column is byte-identical across runs and across three `PYTHONHASHSEED` values.
 
-**Every numeric field silently generated zero candidates.** The `money` transform returns
-floats, so a known-good `37732000.0` stringified and normalised to `"377320000"` — one
-digit longer than anything on the page. No exception, no warning: `population`, `price`
-and every other numeric field simply produced an empty candidate list and the page
-quarantined. Fixing the normalisation took recovery from 0.50 to 0.75. The project's own
-failure mode, again, in our own code.
+### Verifying reproducibility yourself
 
-**The regression gate rejected a fix that was right, and it was correct to.** For a decoy,
-the ranker's best idea is a positional path — which recovers 100% on the broken page and
-points at the wrong node on the page that used to work. G2 killed it, four cycles running,
-and the site quarantined with a correct repair one selector away. The answer was to
-generate the selector a human would write: exclude the impostor by the class it carries
-and the real node does not (`span.text:not(.compare-at)`), which satisfies both pages.
-The marker is drawn per seed from a pool of real "compare at" class names, so the repair
-has to derive it: `autoheal/` never names one, and two tests assert both halves — that the
-repair adapts to whichever marker a seed chose, and that no marker string appears anywhere
-in the repair code.
+```bash
+for hs in 0 1 12345; do PYTHONHASHSEED=$hs uv run python -m eval.heal_eval --seed 0 \
+  --out /tmp/hs$hs >/dev/null; done
+diff /tmp/hs0/seed0/heal.json /tmp/hs12345/seed0/heal.json && echo identical
+```
 
-**G3 could not clear on a field whose stack had just been patched.** Tier shift and match
-multiplicity describe *how a locator resolved*; after a patch the baseline holds those
-statistics for a locator that no longer exists, so comparing the replacement against them
-is apples to oranges. They are waived for patched fields only — an untouched field with a
-tier shift still blocks the gate, which is the entire reason signal 2 exists.
+CI runs exactly this for all four harnesses on every push.
 
-**A fallback selector with the wrong cardinality looks healthy and caps every gate.**
-`wikitable`'s fallback record selector sweeps in two header rows: 41 records instead of 39,
-so recovery tops out at 0.95 and no gate can ever pass. The loop now prefers induction when
-a promoted fallback has the wrong count, and induction can address a sibling group by what
-it *contains* (`//tr[.//td]`) when no class distinguishes it.
+---
 
-## Hardening pass
+## 9. Main failure mode
 
-A crash sweep over **540 mutated pages** (4 sites × 9 mutators × 3 severities × 5 seeds)
-and 12 adversarial inputs across 7 entry points. The mutated pages produced zero failures.
-The adversarial inputs produced four bugs worth recording, all of the same family — code
-that had never been executed on the input in question.
+**Content that is genuinely gone.** When a page moves to client-side rendering and ships no
+structured data, the values are not in the DOM and no locator can find them. Autoheal detects
+this correctly and **quarantines**: extraction pauses, a human-review card is emitted, and nothing
+is written. All non-recovered cases in §5 are this.
 
-**An empty page crashed every entry point.** `lxml` raises `ParserError: Document is empty`
-on `""` and on whitespace, and all seven of extract / perceive / diff / candidates / induce /
-heal raised on it. An empty response is an ordinary production event — a truncated fetch, a
-200 with no body, a render that failed — and the correct reading of it is *zero records*,
-which fires the monitor loudly. `runtime.parse` now tolerates it, and a blank page ends in an
-honest quarantine rather than a stack trace.
+That is the designed behaviour, but it is worth naming as a limit: **Autoheal cannot recover data
+that is not present.** It can only tell you, immediately and loudly, that it is not present —
+which is still a large improvement on finding out in three weeks.
 
-**`t_iso_date("2024-13-45")` returned `"2024-13-45"`.** The regex fallback accepted any
-`yyyy-mm-dd`-shaped substring without checking it was a date, so month thirteen, day
-forty-five flowed downstream as a valid value. This project's own failure mode, in the
-transform layer. It now refuses, which falls through to the next locator in the stack.
+Two smaller limits, stated plainly:
 
-**`t_money("1 234,56")` returned `1.0`.** A space-separated thousands group — the normal
-convention across much of Europe — stopped the number regex at the space and produced a
-confident wrong number. Now 1234.56. Relatedly `"1e5"` returned `1.0`; scientific notation
-is not a price format and now refuses rather than guessing the mantissa.
+- **The model contributes nothing measurable.** Enabling it leaves recovery unchanged and moves
+  mean F1 by less than a point. On this corpus the deterministic ranker does the work. We report
+  this as a design result — the headline number does not depend on a model — but it is not the
+  result we set out to get.
+- **Six sites and synthetic mutations.** The mutators never see the spec and are site-agnostic,
+  but they are still a breakage distribution we authored. No real redesign has been tested.
 
-**`bool` satisfied the numeric validator**, since `bool` subclasses `int`. Unreachable from
-the current transforms, and exactly the kind of thing that becomes reachable later.
+---
 
-**Blanket `except Exception` around selector evaluation was narrowed** to the errors a
-malformed *locator* actually raises. Catching everything meant a bug in this repo would be
-recorded as "this field is missing" — silent failure, produced by the machinery built to
-detect silent failure. Broad handlers remain only around model I/O, where the exception
-surface really is open-ended.
+## 10. Hot take
 
-A second pass then measured `eval/`, which had never been measured at all — 34%, with the
-summariser at zero. **The arithmetic is the claim**, so a wrong denominator there would move
-the headline recovery rate with nothing going red. It now has tests, including one asserting
-that non-degraded cases stay out of the recovery denominator.
+> **The hardest bug in an agent pipeline is the one where every component reports success.**
 
-**The drift lockfiles had only ever passed.** A checker that has never failed is not evidence.
-Both now have tests that corrupt the committed numbers in a scratch copy and assert a
-non-zero exit.
+Every genuine bug in this project lived in a path that nothing had ever *executed*, and each one
+produced a plausible wrong answer rather than an error:
 
-**The retry path had never produced a success.** Cycle counts across the matrix are
-`{1: 50, 0: 30, 4: 2}` — every case either heals immediately or runs to the cap, so
-"record what lost, exclude it, try something else" was unexercised in the winning direction.
-Forcing a gate failure shows it works: the second cycle picks a *different* strategy, the
-losing one is written to memory as a failed episode, and the cap ends in a quarantine card.
+- A `money` transform returned floats, so `37732000.0` never matched the text `37,732,000`. Every
+  numeric field silently generated **zero** repair candidates. No exception.
+- `t_iso_date("2024-13-45")` returned it verbatim — month 13, day 45 — as a valid-looking date.
+- The demo page embedded JSON containing `</script>`, which closed the host tag early. The file
+  was written, the byte count was right, and the page was dead.
+- The B1 harness scored the baseline at **0.10** because we never gave it the record selector.
+- The ablation output *printed* a conclusion that had become false.
 
-A third pass closed the rest. The library sits at 93–100% per module. Three things there
-are worth naming, because each is a behaviour that could have broken silently:
+**The practical lesson: for every component, ask "what does this look like when it fails
+silently?" and build the detector before the feature.** Concretely, three things earned their
+keep more than any prompt engineering did:
 
-- **The committed corpus is now pinned to the scripts that generate it.** `author_specs.py`
-  and `eval/sites/*/spec.v1.json` could drift apart — edit one and `make truth` would
-  regenerate a corpus that no longer matches the published numbers. Both the specs and the
-  frozen truth are now asserted against what the scripts produce.
-- **Every ablation arm is checked to actually ablate something.** A typo'd kwarg raises, but
-  an arm whose value happens to equal the default would silently duplicate `full` and be
-  published as a null result.
-- **The demo artefact has its own tests**, including the `</script>` break-out regression,
-  and an assertion that the recorded acts really do show a silent failure followed by a
-  repair that clears all three gates — so the demo cannot drift into narrating numbers the
-  system did not produce.
+1. **A negative control.** `content_churn` — new content, unchanged structure — is why the
+   false-alarm rate means something. Without it the FPR is measured against a byte-identical page
+   and is trivially zero.
+2. **Checkers that are proven able to fail.** Both drift lockfiles have tests that corrupt the
+   committed numbers and assert a non-zero exit. A check that has only ever passed is not evidence.
+3. **Invariance tests over value tests.** The `−known-good` ablation leaked three separate ways
+   until we asserted that corrupting the known-good values must not change the ranking *at all*.
+   Pairwise score comparisons passed while the leaks were live.
 
-All four eval harnesses are byte-identical across three `PYTHONHASHSEED` values, and CI
-checks all four rather than the two it checked before.
+What we would build differently next time: **write the eval and its negative control first, then
+the feature.** We did this for extraction and it caught four defects; we did not do it for the
+demo recorder and shipped a page that was broken on open.
 
-## Corpus
+---
+
+## 11. What existed before, and what was built here
+
+**Pre-existing, used under their licences:** Python 3.13, `lxml`, `cssselect`, `pydantic`, `uv`,
+`pytest`; the Ollama runtime and the open-weight `gpt-oss` model; `toscrape.com` (a public
+scraping sandbox) and Wikipedia markup (CC BY-SA) as frozen corpus pages.
+
+**Built for this hackathon — all of it:** every module in `autoheal/`, every harness in `eval/`,
+the mutators, the six-site corpus and its ground truth, all 375 tests, the demo recorder and
+player, the trajectories, and this README. The repository contained no prior work; the first
+commit is from the start of the event.
+
+**Ground-rules compliance.** No credentials or private data are in the repository, and none are
+required. All corpus data is public or synthetic. No consequential action is taken without a human
+checkpoint: an unverifiable repair quarantines and hands over. Every number in §5 links to a
+committed artefact under `results/`, regenerable with the commands in §8.
+
+---
+
+## Appendix A — the eval is built not to flatter us
+
+- **Mutators never see the spec.** They locate the repeating record container heuristically. We are
+  not breaking exactly what we know how to fix.
+- **Decoy markers are drawn per seed** from a pool of real "compare at" class names. No marker
+  string appears anywhere in `autoheal/`, and two tests assert both halves: that the repair adapts
+  to whichever marker a seed chose, and that the repair code names none of them.
+- **`jsonld_drop` exists to defeat our own fallbacks.** Without it, pages with structured data
+  survive almost any redesign via tier 2 and the repair loop is never exercised.
+- **Ground truth is independently verified.** `truth.json` is v1's own output, so scoring v1
+  against it is a tautology. `make verify` checks it by a *different* mechanism — raw-text regex
+  over the HTML and domain invariants (the wikitable is a ranked list, so population must be
+  strictly descending). `verify_truth` refuses to pass a site that has only generic checks.
+- **`hn` is the hostile case:** no structured data at all, values embedded in prose (`91 points`),
+  and nav chrome reusing the record classes.
+
+## Appendix B — corpus
 
 | site | source | records |
 |---|---|---|
 | `books` | books.toscrape.com (scraping sandbox), frozen | 20 |
 | `quotes` | quotes.toscrape.com (scraping sandbox), frozen | 10 |
-| `wikitable` | real `wikitable` markup from Wikipedia, extracted verbatim | 39 |
-| `shop` | synthetic SSR product grid with JSON-LD (`eval/sites/shop/generate.py`) | 24 |
-| `hn` | synthetic link-aggregator listing — **no structured data at all** | 30 |
-| `jobs` | synthetic job board with JSON-LD, microdata and a definition list | 18 |
+| `wikitable` | real `wikitable` markup from Wikipedia | 39 |
+| `shop` | synthetic SSR product grid with JSON-LD | 24 |
+| `hn` | synthetic link-aggregator listing, **no structured data** | 30 |
+| `jobs` | synthetic job board: JSON-LD + microdata + definition list | 18 |
 
-`hn` is the hostile case: no schema.org tier to fall back on, values embedded in prose
-("91 points"), and nav chrome reusing the record classes. `jobs` is the only site with a
-**date** field — `t_iso_date` had no corpus coverage at all, which is how a transform that
-accepted `2024-13-45` as valid survived until the hardening pass.
+Eight seeded, composable mutations at three severities, plus `content_churn` as a negative
+control. `decoy_injection` is the flagship: it clones a field node, gives it a plausible wrong
+value, and inserts it ahead of the real one. Nothing errors; fill rate stays 100%.
 
-Ground truth is v1 output on the clean page, frozen to `truth.json`. Everything is offline and
-seeded; `make eval` is reproducible with no network.
+## Appendix C — repository layout
 
-## Stage-1 audit
+```
+autoheal/     spec · runtime · perceive · diff · localize · patch · verify · memory · diagnose · loop
+eval/         sites (6, frozen) · mutators · harness · perceive_eval · heal_eval · ablations
+              b1_oneshot · trajectories · verify_truth · check_baseline · check_heal
+demo/         record.py → events.json → replay.html   (self-contained, offline)
+trajectories/ four captured agent runs
+results/      committed numbers for seeds 0–3; the drift lockfiles compare against these
+tests/        375 tests
+```
 
-The harness was audited before any agent code was written. Four defects found and fixed;
-they are recorded here because two of them would have silently invalidated the results.
-
-**The eval was not reproducible across processes.** Same seed gave F1 0.658 / 0.648 / 0.653.
-`_field_like_tokens` and `decoy_injection` built their token lists by iterating a **`set`**,
-whose order depends on `PYTHONHASHSEED`; that order then fed `rng.shuffle`, so the seeded RNG
-picked different mutation targets in every process. Fixed by sorting. The existing determinism
-test could not catch it — it compared two calls *in the same process*, where set order is
-stable. `test_mutations_are_deterministic_across_processes` now runs the mutators under three
-different hash seeds in subprocesses.
-
-**`decoy_injection` — the flagship mutation — missed about half the time.** It carried its own
-weaker copy of field detection and frequently decoyed layout chrome (`icon-star`, `col-lg-3`)
-instead of an extracted field. Now shares `_field_like_tokens`.
-
-**Ground truth was circular.** `truth.json` *is* v1's output on the clean page, so
-`test_clean_page_scores_perfectly` asserted `x == x` and could never fail. `eval/verify_truth.py`
-now checks truth on a *different* mechanism: raw-text regex over the HTML (all 20 `£` prices in
-`books` must equal the 20 extracted prices) and domain invariants (`wikitable` is a ranked list,
-so population must be strictly descending — any off-by-one or row swap shows up immediately).
-
-**Our own JSON-LD handling had the exact bug this project is about.** Record roots were aligned
-to JSON-LD objects by position with no `@type` filter, so a single leading `WebSite` or
-`BreadcrumbList` node — which real pages almost always carry — shifted every record by one and
-returned confident, plausible, wrong values. `_align_jsonld` now keeps only the modal `@type`,
-and a root/object count mismatch is reported in `run.errors` instead of being indexed past.
-
-One check was *supposed* to fail and did: `not_constant` fired on `books.availability`, because
-every book on that page really is "In stock". Carried forward as a design note for
-`perceive.py` — collapse must be judged against a baseline. A field that has always been
-constant is not evidence; a field that *newly* becomes constant is.
-
-See `PLAN.md` for the full architecture and the remaining schedule.
+Ten of the eleven `autoheal/` modules never call a model. That is the engineering point: the agent
+is the small, constrained part of a mostly deterministic system.

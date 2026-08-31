@@ -1,4 +1,4 @@
-.PHONY: eval test truth verify check perceive heal check-heal ablations b1 demo demo-replay all
+.PHONY: eval test truth verify check perceive heal check-heal ablations b1 trajectories demo demo-replay all
 all: verify test check perceive heal check-heal
 
 test:
@@ -19,6 +19,8 @@ ablations:   ## which parts of the design are load-bearing (incl. null results)
 	uv run python -m eval.ablations --seed 0
 check-heal:  ## fail if the committed healing numbers no longer reproduce
 	uv run python -m eval.check_heal
+trajectories: ## regenerate the four agent trajectories from live runs
+	uv run python -m eval.trajectories
 demo:        ## re-record the demo from real runs (set AUTOHEAL_LLM for real token counts)
 	uv run python -m demo.record
 demo-replay: ## open the recorded demo -- self-contained, offline, no server
