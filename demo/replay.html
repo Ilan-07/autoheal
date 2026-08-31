@@ -755,7 +755,7 @@
    },
    "ablated": {
     "calls": 2,
-    "tokens": 3688,
+    "tokens": 3721,
     "avoided": 0,
     "healed": true,
     "f1": 1.0
@@ -895,10 +895,22 @@ $('play').onclick = () => playing ? stop() : play();
 $('fwd').onclick = () => { stop(); step(1); };
 $('back').onclick = () => { stop(); step(-1); };
 $('reset').onclick = () => { stop(); i = 0; render(); };
-document.addEventListener('keydown', ev => {
+// Keys are bound on `window`, and focus is pulled back out of the page pane
+// after any click. The left pane is a sandboxed <iframe>; clicking inside it
+// moves focus there and it swallows every keystroke, so Space and the arrows
+// silently stopped working as soon as anyone touched the thing they were
+// looking at.
+window.addEventListener('keydown', ev => {
+  if (ev.target && /^(INPUT|TEXTAREA)$/.test(ev.target.tagName)) return;
   if (ev.key === ' '){ ev.preventDefault(); playing ? stop() : play(); }
-  if (ev.key === 'ArrowRight'){ stop(); step(1); }
-  if (ev.key === 'ArrowLeft'){ stop(); step(-1); }
+  if (ev.key === 'ArrowRight'){ ev.preventDefault(); stop(); step(1); }
+  if (ev.key === 'ArrowLeft'){ ev.preventDefault(); stop(); step(-1); }
+  if (ev.key === 'r' || ev.key === 'R'){ stop(); i = 0; render(); }
 });
+// The iframe can still take focus on click; take it straight back.
+window.addEventListener('blur', () => setTimeout(() => window.focus(), 0));
+document.addEventListener('click', () => window.focus());
+window.focus();
+
 render();
 </script>
