@@ -73,21 +73,79 @@ Those are the ones a fill-rate alarm cannot see.
 
 ---
 
-## 3. Quickstart
+## 3. Quickstart — from nothing to the headline number
+
+Three commands, about two and a half minutes, on a machine with none of this installed. No API
+key, no network access, no accounts.
+
+**1. Install `uv`** (the only prerequisite — it fetches the right Python for you):
 
 ```bash
-git clone <repo> && cd hack
-uv sync                 # Python 3.13, three runtime deps
-make all                # ~2 min, fully offline, no API key
+curl -LsSf https://astral.sh/uv/install.sh | sh     # macOS / Linux
+# Windows PowerShell:  irm https://astral.sh/uv/install.ps1 | iex
+# or, if you prefer:   brew install uv   /   pipx install uv
 ```
 
-`make all` runs ground-truth verification, 375 tests, the static baseline, the detection eval,
-the healing eval and both drift lockfiles. Full reproduction guide in §8.
+**2. Clone and install:**
 
 ```bash
-make demo-replay        # open the recorded demo — self-contained, no server, no network
-open demo/autoheal-demo.mp4   # the 4:05 narrated walkthrough
+git clone https://github.com/Ilan-07/autoheal.git && cd autoheal
+uv sync
 ```
+
+You do **not** need Python 3.13 already installed. `uv sync` reads `.python-version`, downloads
+the right interpreter into a local virtualenv, and installs the three runtime dependencies
+(`lxml`, `pydantic`, `cssselect`). Nothing is installed system-wide.
+
+**3. Run everything:**
+
+```bash
+make all
+```
+
+That runs ground-truth verification, 375 tests, the static baseline, the detection eval, the
+healing eval and both drift lockfiles. **You should see this at the end**, and the command exits
+non-zero if any of it fails:
+
+```
+RECOVERY             : 0.87   (B0 static baseline: 0.00 by construction)
+mean F1              : 0.289 -> 0.914
+healthy-case damage  : 0
+baseline reproduces exactly: 72 cases match results/seed0/b0_static.json
+healing results reproduce exactly: recovery 0.87, 30 cases needing repair
+```
+
+### No `make`? Run the same six steps directly
+
+`make` is not on a stock Windows install. Every target is a single command:
+
+```bash
+uv run python -m eval.verify_truth        # independent ground-truth checks
+uv run pytest -q                          # 375 tests
+uv run python -m eval.check_baseline      # B0 drift lockfile
+uv run python -m eval.perceive_eval --seed 0   # detection vs false alarms
+uv run python -m eval.heal_eval --seed 0       # recovery, ranker, memory ablation
+uv run python -m eval.check_heal          # healing drift lockfile
+```
+
+### See it rather than read it
+
+```bash
+open demo/autoheal-demo.mp4     # 4:05 narrated walkthrough  (xdg-open on Linux)
+open demo/replay.html           # step through the same run yourself — no server, no network
+```
+
+`replay.html` is a single self-contained file: double-click it. Space plays, arrow keys step.
+
+### If something goes wrong
+
+- **`uv: command not found`** after installing — open a new shell, or `source ~/.bashrc` / `source ~/.zshrc`.
+- **A drift lockfile fails** — that is the check working: it means a number moved. `git status`
+  will show which `results/` file differs, and the failure output names the exact metric.
+- **`make ablations` or `make b1` looks stuck** — they are the slow ones (~4 min and ~10 min).
+  Neither is needed for anything in §5. `make b1` additionally needs a model; see §8.
+
+Full reproduction guide, versions, runtimes and the optional model steps in [§8](#8-reproduction-guide).
 
 ---
 
@@ -350,6 +408,7 @@ Written for someone starting from a clean environment.
 | Network | **none required** for any result in §5 |
 | API key | **none required** |
 | Disk | ~40 MB |
+| OS | developed on macOS; pure Python plus `lxml`, so Linux and Windows work. `make` and `open` are the only macOS/Linux-isms — see the no-`make` commands in §3 |
 
 ### Data
 
