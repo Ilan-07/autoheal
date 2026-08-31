@@ -90,8 +90,9 @@ The naive framing is "here is 400KB of new HTML, fix the selector." Autoheal ins
 to address the node it landed in, and score each one by executing it against every record on the
 page.* The model, if it is consulted at all, chooses among ~8 pre-measured options.
 
-**Evidence it matters:** ablating it (`−known-good`) drops recovery **0.87 → 0.13**. It is by far
-the largest effect in the ablation table.
+**Evidence it matters:** with this removed (`−known-good`), the same system recovers **0.13**
+instead of 0.87 — by far the largest effect in the ablation table. Autoheal's own score is 0.87;
+0.13 is the counterfactual.
 
 ### 4.2 Tools: a locator *stack*, not a selector
 
@@ -158,12 +159,15 @@ would be easy to dress that up. Instead:
 
 Each of those claims is a row in the ablation table below:
 
-| capability | ablated | evidence it earns its place |
+Each row below is a **counterfactual**: what the project would score with that capability
+removed. Autoheal itself scores 0.87 — the low numbers are the versions of it that do not exist.
+
+| capability | remove it, and… | |
 |---|---|---|
-| context — known-good values as supervision | `−known-good` | recovery **0.87 → 0.13** |
-| memory — episodes keyed on symptom | `−memory` | **68%** more decisions need a model |
-| verification — the three gates | `−regression` | null on our ranker; **34 overfits** caught in B1 |
-| tools — the locator stack | `−stack` | **10 more breakages** need a repair at all |
+| context — known-good values as supervision | recovery **falls to 0.13** | from 0.87 |
+| memory — episodes keyed on symptom | model calls **rise to 65** | from 21 |
+| verification — the three gates | null on our own ranker | but **34 overfits** caught in B1 |
+| tools — the locator stack | **10 more breakages** need a repair | 40 instead of 30 |
 
 By the strict definition — a model autonomously choosing actions in a loop — this is a
 constrained workflow, not an autonomous agent. Control flow is fixed, cycles are flat at one,

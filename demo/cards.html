@@ -77,8 +77,9 @@
 <div class="card" id="c3">
   <h2>What actually made the difference</h2>
   <div class="grid">
-    <div><div class="n ok">0.87→0.13</div><div class="dim">recovery, without known-good values as the
-      supervision signal. The largest effect by far.</div></div>
+    <div><div class="n bad">0.13</div><div class="dim">recovery <b>if we remove</b> known-good values
+      as the supervision signal — against <span class="ok">0.87</span> with them. The largest effect
+      in the ablation table.</div></div>
     <div><div class="n acc">1 in 6</div><div class="dim">decisions reach a model. Memory resolves half;
       the deterministic ranker settles the rest.</div></div>
     <div><div class="n vio">10 of 11</div><div class="dim">modules never call a model. The agent is the
@@ -114,13 +115,13 @@
     We are reporting that rather than hiding it.
   </div>
   <table style="margin-top:26px">
-    <tr><th>capability</th><th>ablated</th><th>evidence it earns its place</th></tr>
+    <tr><th>capability</th><th>remove it and…</th><th>what happens</th></tr>
     <tr><td>context — known-good values</td><td class="dim">−known-good</td>
-        <td class="ok"><b>recovery 0.87 → 0.13</b></td></tr>
+        <td><b>recovery falls to <span class="bad">0.13</span>, from <span class="ok">0.87</span></b></td></tr>
     <tr><td>memory — episodes by symptom</td><td class="dim">−memory</td>
-        <td class="ok"><b>68% more model calls</b></td></tr>
+        <td><b>model calls rise to <span class="bad">65</span>, from <span class="ok">21</span></b></td></tr>
     <tr><td>verification — three gates</td><td class="dim">−regression</td>
-        <td class="ok"><b>34 overfits caught in the baseline</b></td></tr>
+        <td><b><span class="ok">34</span> overfits it catches in the baseline</b></td></tr>
   </table>
   <div class="foot">And we can prove the language model is not secretly doing the work —
     <span class="acc">one decision in six reaches it, and recovery is identical with it off.</span></div>
