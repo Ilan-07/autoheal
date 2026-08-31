@@ -15,7 +15,7 @@ from dataclasses import asdict
 from autoheal.runtime import extract
 from autoheal.spec import ExtractorSpec
 from eval import mutators
-from eval.metrics import score
+from autoheal.metrics import score
 
 ROOT = pathlib.Path(__file__).resolve().parent
 SITES = ["books", "quotes", "wikitable", "shop"]

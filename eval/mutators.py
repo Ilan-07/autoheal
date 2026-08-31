@@ -18,6 +18,13 @@ from lxml import html as lhtml
 
 HASH_ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789"
 
+# Markers real storefronts put on a struck-through "compare at" element. Sorted,
+# because rng.choice over an unsorted collection would not be reproducible.
+DECOY_MARKERS = sorted([
+    "was-value", "compare-at", "list-price", "prev-price", "strikethrough",
+    "promo-ref", "old-value", "rrp",
+])
+
 
 @dataclass
 class Mutation:
@@ -210,6 +217,13 @@ def decoy_injection(doc, rng: random.Random, severity: int) -> tuple[str, int]:
         return "no per-record field class found; no-op", 0
     rng.shuffle(field_tokens)
     targets = field_tokens[: {1: 1, 2: 2, 3: 3}[severity]]
+    # The marker the decoy carries is picked per seed, not hardcoded. A fixed
+    # literal made the repair look rigged -- the generated fix reads
+    # `:not(.was-value)` while the mutator sets `was-value`, which invites the
+    # obvious objection even though `_disambiguated` derives it generically and
+    # `autoheal/` never names it. Drawing from a pool of real "compare at"
+    # markers removes the objection instead of answering it.
+    marker = rng.choice(DECOY_MARKERS)
 
     n = 0
     for root in roots:
@@ -219,14 +233,15 @@ def decoy_injection(doc, rng: random.Random, severity: int) -> tuple[str, int]:
                 continue
             real = hits[0]
             decoy = lhtml.fromstring(lhtml.tostring(real))
-            decoy.set("class", (decoy.get("class") or "") + " was-value")
+            decoy.set("class", (decoy.get("class") or "") + " " + marker)
             for node in decoy.iter():
                 if node.text and node.text.strip():
                     node.text = _perturb(node.text, rng)
             parent = real.getparent()
             parent.insert(list(parent).index(real), decoy)
             n += 1
-    return f"injected {n} decoys on {targets} (plausible wrong values, ahead of the real node)", n
+    return (f"injected {n} decoys on {targets} marked .{marker}"
+            " (plausible wrong values, ahead of the real node)"), n
 
 
 def content_deferred(doc, rng: random.Random, severity: int) -> tuple[str, int]:
@@ -283,7 +298,67 @@ def record_reorder(doc, rng: random.Random, severity: int) -> tuple[str, int]:
     return f"reordered {len(roots)} records in the DOM", len(roots)
 
 
+def content_churn(doc, rng: random.Random, severity: int) -> tuple[str, int]:
+    """The negative control: the page publishes new content, unchanged structure.
+
+    Not a breakage, and PERCEIVE must stay quiet on it. Without this case the
+    false-alarm rate is measured against a byte-identical page and is trivially
+    zero, which would make the monitor look far better than it is -- the whole
+    difficulty of signal 8 is telling 'the site restocked' apart from 'the
+    selector moved'.
+
+    Two rules keep it an honest control rather than a disguised breakage:
+    numbers are *jittered* within a plausible band rather than rescaled, and any
+    string repeated across three or more records is left alone. That second rule
+    is site-agnostic and matters: a repeated string is a shared category label
+    ("In stock"), and a site that restocks does not invent a new vocabulary for
+    its enum. Mangling those was firing the validator and drift signals, which
+    made a content change look exactly like the breakage it is meant to rule out.
+
+    Deliberately absent from `harness.RECIPES`: it is a control for the monitor,
+    not a breakage for the extractor. Its F1 against frozen truth *should* fall
+    -- the content really did change -- while the health score stays at zero.
+    """
+    roots = find_record_container(doc)
+    if not roots:
+        return "no record container found; no-op", 0
+
+    shared: dict[str, int] = defaultdict(int)
+    for root in roots:
+        for txt in {" ".join(el.text.split()) for el in root.iter()
+                    if isinstance(el.tag, str) and el.text and el.text.strip()}:
+            shared[txt] += 1
+
+    n = skipped = 0
+    for root in roots:
+        for el in root.iter():
+            if not isinstance(el.tag, str) or not el.text or not el.text.strip():
+                continue
+            txt = el.text
+            if shared[" ".join(txt.split())] >= 3:
+                skipped += 1
+                continue
+            m = re.search(r"\d[\d,]*\.?\d*", txt)
+            if m:  # a restock/repricing, not a factor-of-two jump
+                try:
+                    val = float(m.group(0).replace(",", "")) * rng.uniform(0.94, 1.06)
+                    dec = len(m.group(0).split(".")[1]) if "." in m.group(0) else 0
+                    el.text = txt[: m.start()] + f"{val:,.{dec}f}" + txt[m.end():]
+                    n += 1
+                except ValueError:
+                    pass
+                continue
+            words = txt.split()
+            if len(words) > 1:  # new phrasing, same vocabulary
+                rng.shuffle(words)
+                el.text = (" " if txt[:1].isspace() else "") + " ".join(words)
+                n += 1
+    return (f"churned {n} per-record text nodes in {len(roots)} records"
+            f" ({skipped} shared labels left alone); structure untouched"), n
+
+
 MUTATORS: dict[str, Callable] = {
+    "content_churn": content_churn,
     "jsonld_drop": jsonld_drop,
     "record_reorder": record_reorder,
     "class_rename": class_rename,
