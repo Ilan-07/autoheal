@@ -91,6 +91,22 @@
   </div>
 </div>
 
+<div class="card" id="c4">
+  <h2>Reproduce every number in this video</h2>
+  <div style="font-size:26px;line-height:2;margin:18px 0 8px">
+    <code>git clone</code> &nbsp;<span class="dim">→</span>&nbsp;
+    <code>uv sync</code> &nbsp;<span class="dim">→</span>&nbsp;
+    <code>make all</code>
+  </div>
+  <div class="sub" style="margin-top:20px">
+    Two minutes. No network. No API key. Byte-identical across four seeds and three
+    <code>PYTHONHASHSEED</code> values — and the build fails if any committed number drifts.
+  </div>
+  <div class="rule"></div>
+  <div style="font-size:20px">Thanks for watching.</div>
+  <div class="foot">375 tests · six frozen sites · four agent trajectories · <code>make demo-replay</code></div>
+</div>
+
 <script>
   const n = new URLSearchParams(location.search).get('card') || '0';
   const el = document.getElementById('c' + n);

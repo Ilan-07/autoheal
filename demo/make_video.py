@@ -34,9 +34,27 @@ OUT = HERE / "autoheal-demo.mp4"
 # Daniel reads technical prose the least mechanically of those, and a slower rate
 # with explicit pauses between sentences does more for naturalness than the voice
 # choice does. A downloaded Premium voice would beat all of them -- see README.
-VOICE, RATE = "Daniel", 152
-PAUSE_MS = 300          # inserted at sentence boundaries
-PARA_MS = 520           # inserted between segments
+VOICE, RATE = "Daniel", 176
+PAUSE_MS = 190          # inserted at sentence boundaries
+PARA_MS = 340           # inserted between segments
+
+# A frame has to stay up long enough to be read, regardless of how long the line
+# over it takes to say. Raising the speaking rate to a conversational 176 shortened
+# every segment, and the dense frames -- the comparison table, the ranked candidate
+# lists -- became unreadable before they cut. These are floors in seconds, applied
+# by padding the narration with trailing silence rather than by speaking slower.
+MIN_HOLD: dict[object, float] = {
+    "card1": 15.0,   # three-row failure table
+    "card2": 20.0,   # six-row comparison table, the densest frame in the video
+    "card3": 12.0,   # three stat boxes plus a paragraph
+    "card4": 11.0,   # the reproduce-it card, last thing on screen
+    1: 9.0,          # the page alone, before the static panel appears
+    10: 14.0,        # eight ranked candidates with six columns
+    11: 12.0,        # same table, plus the chosen patch line
+    16: 11.0,        # gates, plus both candidate tables still on screen
+    17: 12.0,        # the spec diff
+    32: 13.0,        # the with/without-memory panel
+}
 
 # (frame, narration). `frame` is an int -> a state of demo/replay.html, or
 # "cardN" -> a title card from demo/cards.html.
@@ -51,7 +69,7 @@ SEGMENTS: list[tuple[object, str]] = [
               "that looks like."),
 
     # --- act I: the silent failure
-    (2, "This scraper ran fine yesterday. Overnight the site added a promoted item above every "
+    (1, "This scraper ran fine yesterday. Overnight the site added a promoted item above every "
         "quote. You can see them on the left, each beginning with the word Sponsored."),
     (2, "Here is what the scraper reports. Ten records. One hundred percent fill rate. Zero errors. "
         "Every dashboard you own is green."),
@@ -90,8 +108,10 @@ SEGMENTS: list[tuple[object, str]] = [
     ("card3", "The experiment we removed was the cycles to recover chart. We planned it as a "
               "headline, then measured cycles flat at one, so we retired the claim rather than "
               "massage it. Two ablations came back null and are published as nulls."),
-    ("card3", "Ten of the eleven modules never call a model. That is the point. Everything you have "
-              "seen regenerates with one command, offline, with no API key. Thanks for watching."),
+    ("card3", "Ten of the eleven modules never call a model. That is the point. The agent is the "
+              "small, constrained part of a mostly deterministic system."),
+    ("card4", "And everything you have just seen regenerates with one command, offline, with no API "
+              "key. Thanks for watching."),
 ]
 
 
@@ -158,13 +178,20 @@ def build_audio() -> int:
     plan = []
     for i, (frame, text) in enumerate(SEGMENTS):
         aiff = AUDIO / f"{i:02d}.aiff"
-        text = _natural(text.format(**_spoken_numbers()))
-        subprocess.run(["say", "-v", VOICE, "-r", str(RATE), "-o", str(aiff), text], check=True)
+        spoken = _natural(text.format(**_spoken_numbers()))
+        subprocess.run(["say", "-v", VOICE, "-r", str(RATE), "-o", str(aiff), spoken], check=True)
         d = _dur(aiff)
+        floor = MIN_HOLD.get(frame, 0.0)
+        if d < floor:  # hold the frame by padding with silence, not by slowing down
+            pad = int((floor - d) * 1000)
+            subprocess.run(["say", "-v", VOICE, "-r", str(RATE), "-o", str(aiff),
+                            spoken + f" [[slnc {pad}]]"], check=True)
+            d = _dur(aiff)
         total += d
         plan.append({"segment": i, "source": frame, "seconds": round(d, 2),
                      "frame": str(FRAMES / f"{i:02d}.png")})
-        print(f"  {i:02d}  {str(frame):>6}  {d:5.1f}s  {text[:56]}...")
+        held = " (held)" if MIN_HOLD.get(frame, 0.0) > 0 and d >= MIN_HOLD[frame] - 0.2 else ""
+        print(f"  {i:02d}  {str(frame):>6}  {d:5.1f}s{held:7} {text[:48]}...")
     (BUILD / "plan.json").write_text(json.dumps(plan, indent=1))
     print(f"\n  {len(SEGMENTS)} segments, {total/60:.1f} min total (brief allows 5)")
     print(f"  now capture one PNG per segment into {FRAMES}/NN.png at the event index shown")
