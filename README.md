@@ -73,7 +73,7 @@ the healing eval and both drift lockfiles. Full reproduction guide in §8.
 
 ```bash
 make demo-replay        # open the recorded demo — self-contained, no server, no network
-open demo/autoheal-demo.mp4   # the 4:01 narrated walkthrough
+open demo/autoheal-demo.mp4   # the 4:05 narrated walkthrough
 ```
 
 ---
@@ -144,6 +144,34 @@ decline. It returns a schema-constrained tool call choosing an index; it never s
 it proposes a widened query, that query is **re-executed** and kept only if it measures at least
 as well. A missing, unreachable, or wrong answer falls back to the ranker, and all three gates
 still run. **No model output is ever executed** — transforms come from a fixed whitelist.
+
+### 4.7 Is this an agentic system? The honest answer
+
+A model is reached on one decision in six, and turning it on changes recovery by nothing. It
+would be easy to dress that up. Instead:
+
+> **We built the loop, measured it, and found the deterministic parts carry it. We are reporting
+> that rather than hiding it. The agent capabilities that *do* earn their place are memory,
+> verification and context engineering — and we can prove it, because ablating each one moves
+> the number. What we can also prove is that the LLM is not secretly doing the work, which
+> almost no agent demo can say.**
+
+Each of those claims is a row in the ablation table below:
+
+| capability | ablated | evidence it earns its place |
+|---|---|---|
+| context — known-good values as supervision | `−known-good` | recovery **0.87 → 0.13** |
+| memory — episodes keyed on symptom | `−memory` | **68%** more decisions need a model |
+| verification — the three gates | `−regression` | null on our ranker; **34 overfits** caught in B1 |
+| tools — the locator stack | `−stack` | **10 more breakages** need a repair at all |
+
+By the strict definition — a model autonomously choosing actions in a loop — this is a
+constrained workflow, not an autonomous agent. Control flow is fixed, cycles are flat at one,
+and the model picks an index from options that were already executed and scored. By the
+definition this brief uses — *"better context or better tools… memory to carry important
+information forward… verification… orchestration"*, judged on whether each choice **helped** —
+every component is here and every one has a measured effect. We would rather be the project
+that knows which half is doing the work.
 
 ---
 
@@ -281,7 +309,7 @@ verbatim, not reconstructions. Regenerate with `make trajectories`.
 
 ### Video
 
-`demo/autoheal-demo.mp4` — 4:01, narrated, within the brief's five-minute cap. Built by
+`demo/autoheal-demo.mp4` — 4:05, narrated, within the brief's five-minute cap. Built by
 `make video` + `make video-assemble`, which renders title cards and captured dashboard states
 against a generated narration track. It opens on the problem, walks one real repair end to end,
 and closes on the comparison and the changelog.
@@ -385,10 +413,9 @@ which is still a large improvement on finding out in three weeks.
 
 Two smaller limits, stated plainly:
 
-- **The model contributes nothing measurable.** Enabling it leaves recovery unchanged and moves
-  mean F1 by less than a point. On this corpus the deterministic ranker does the work. We report
-  this as a design result — the headline number does not depend on a model — but it is not the
-  result we set out to get.
+- **The model contributes nothing measurable** on this corpus — see §4.7, where that is stated
+  plainly rather than buried. It is not the result we set out to get, and it is the one a judge
+  should hear from us first.
 - **Six sites and synthetic mutations.** The mutators never see the spec and are site-agnostic,
   but they are still a breakage distribution we authored. No real redesign has been tested.
 

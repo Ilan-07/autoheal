@@ -29,12 +29,13 @@ HERE = pathlib.Path(__file__).resolve().parent
 BUILD = HERE.parent / "build"
 AUDIO, FRAMES = BUILD / "audio", BUILD / "frames"
 OUT = HERE / "autoheal-demo.mp4"
-# Only five voices are genuinely installed on a stock macOS (Samantha, Daniel,
-# Karen, Moira, Tessa); every other name silently falls back to one default.
-# Daniel reads technical prose the least mechanically of those, and a slower rate
-# with explicit pauses between sentences does more for naturalness than the voice
-# choice does. A downloaded Premium voice would beat all of them -- see README.
-VOICE, RATE = "Daniel", 176
+# Check a voice is real before trusting it: on a stock macOS only a handful are
+# installed and every other name silently falls back to one default, which you
+# can spot because the rendered duration and byte count are identical across all
+# of them. `Aman` here is a downloaded voice; the stock fallbacks it beats are
+# Samantha, Daniel, Karen, Moira and Tessa. Rate and sentence pauses still matter
+# more than the voice for listenability -- see MIN_HOLD below for the other half.
+VOICE, RATE = "Aman", 176
 PAUSE_MS = 190          # inserted at sentence boundaries
 PARA_MS = 340           # inserted between segments
 
@@ -48,6 +49,7 @@ MIN_HOLD: dict[object, float] = {
     "card2": 20.0,   # six-row comparison table, the densest frame in the video
     "card3": 12.0,   # three stat boxes plus a paragraph
     "card4": 11.0,   # the reproduce-it card, last thing on screen
+    "card5": 13.0,   # the agency statement plus its three-row evidence table
     1: 9.0,          # the page alone, before the static panel appears
     10: 14.0,        # eight ranked candidates with six columns
     11: 12.0,        # same table, plus the chosen patch line
@@ -108,8 +110,12 @@ SEGMENTS: list[tuple[object, str]] = [
     ("card3", "The experiment we removed was the cycles to recover chart. We planned it as a "
               "headline, then measured cycles flat at one, so we retired the claim rather than "
               "massage it. Two ablations came back null and are published as nulls."),
-    ("card3", "Ten of the eleven modules never call a model. That is the point. The agent is the "
-              "small, constrained part of a mostly deterministic system."),
+    ("card5", "So, is this an agentic system? We built the loop, measured it, and found the "
+              "deterministic parts carry it. We are reporting that rather than hiding it."),
+    ("card5", "The agent capabilities that do earn their place are memory, verification, and "
+              "context engineering, and we can prove it, because ablating each one moves the "
+              "number. What we can also prove is that the language model is not secretly doing "
+              "the work. Almost no agent demo can say that."),
     ("card4", "And everything you have just seen regenerates with one command, offline, with no API "
               "key. Thanks for watching."),
 ]

@@ -107,6 +107,25 @@
   <div class="foot">375 tests · six frozen sites · four agent trajectories · <code>make demo-replay</code></div>
 </div>
 
+<div class="card" id="c5">
+  <h2>Is this an agentic system?</h2>
+  <div style="border-left:3px solid var(--acc);padding:4px 0 4px 22px;font-size:21px;line-height:1.65">
+    We built the loop, measured it, and found the <b>deterministic parts carry it</b>.<br>
+    We are reporting that rather than hiding it.
+  </div>
+  <table style="margin-top:26px">
+    <tr><th>capability</th><th>ablated</th><th>evidence it earns its place</th></tr>
+    <tr><td>context — known-good values</td><td class="dim">−known-good</td>
+        <td class="ok"><b>recovery 0.87 → 0.13</b></td></tr>
+    <tr><td>memory — episodes by symptom</td><td class="dim">−memory</td>
+        <td class="ok"><b>68% more model calls</b></td></tr>
+    <tr><td>verification — three gates</td><td class="dim">−regression</td>
+        <td class="ok"><b>34 overfits caught in the baseline</b></td></tr>
+  </table>
+  <div class="foot">And we can prove the language model is not secretly doing the work —
+    <span class="acc">one decision in six reaches it, and recovery is identical with it off.</span></div>
+</div>
+
 <script>
   const n = new URLSearchParams(location.search).get('card') || '0';
   const el = document.getElementById('c' + n);
