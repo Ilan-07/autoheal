@@ -97,6 +97,10 @@ class FieldResult(BaseModel):
     kind: str | None = None
     raw: str | None = None  # pre-transform text, useful as repair evidence
     failed_validator: str | None = None
+    # How many nodes the winning locator matched. Observational only -- the
+    # value is still the first match -- but a selector that used to match one
+    # node per record and now matches two is a decoy, and this is how we see it.
+    n_hits: int = 0
 
 
 class Record(BaseModel):

@@ -13,9 +13,38 @@ from datetime import date, datetime
 from typing import Any
 from urllib.parse import urljoin
 
+from cssselect import SelectorError
+from lxml import etree as letree
 from lxml import html as lhtml
 
 from .spec import ExtractionRun, ExtractorSpec, FieldResult, Locator, Record, Validator
+
+# What a *malformed locator* raises. Narrowed deliberately: a blanket
+# `except Exception` around selector evaluation also swallows bugs in our own
+# code and returns them as "this field is missing", which is the silent-failure
+# mode this project exists to catch. A bad query is a miss; anything else should
+# surface.
+LOCATOR_ERRORS = (SelectorError, letree.XPathError, letree.LxmlError, re.error, ValueError, TypeError)
+
+# What a *transform* may legitimately raise on hostile input. Transforms are our
+# own whitelisted functions, so an AttributeError or KeyError from one is a bug
+# in this repo, not a malformed page -- it should surface rather than be recorded
+# as "this field is missing".
+TRANSFORM_ERRORS = (ValueError, TypeError, ArithmeticError, UnicodeError, IndexError)
+
+
+def parse(html_text: str):
+    """Parse a page, tolerating the empty and near-empty ones.
+
+    lxml raises `ParserError: Document is empty` on "" and on whitespace. An
+    empty response is an ordinary production event -- a truncated fetch, a 200
+    with no body, a page behind a failed render -- and the right reading of it is
+    "zero records", which fires the monitor loudly. Raising instead turns a
+    detectable breakage into a crashed pipeline."""
+    try:
+        return lhtml.fromstring(html_text or "")
+    except (letree.ParserError, letree.XMLSyntaxError, ValueError):
+        return lhtml.fromstring("<html><body></body></html>")
 
 # --- transforms -----------------------------------------------------------
 # Whitelisted by name. The agent may only *reference* these, never define one,
@@ -23,6 +52,14 @@ from .spec import ExtractionRun, ExtractorSpec, FieldResult, Locator, Record, Va
 
 _WS = re.compile(r"\s+")
 _NUM = re.compile(r"-?\d[\d.,]*")
+# A space, NBSP or narrow-NBSP sitting between a digit and exactly three more
+# digits is a thousands separator ("1 234,56" is 1234.56 in much of Europe).
+# Without this the number regex stopped at the space and returned 1.0 -- a
+# confident, plausible, wrong value, which is the failure this project is about.
+_THOUSANDS = re.compile(r"(?<=\d)[ \u00a0\u202f](?=\d{3}(?!\d))")
+# Scientific notation is not a price format. Parsing "1e5" as 1.0 is worse than
+# refusing it, because a refusal falls through to the next locator in the stack.
+_SCI = re.compile(r"\d[eE][+-]?\d")
 
 
 def _norm(s: str | None) -> str:
@@ -35,7 +72,10 @@ def t_text(s: str) -> str | None:
 
 def t_money(s: str) -> float | None:
     """Parse a price out of noisy text: '$24.99', 'USD 24,99', 'GBP 1,234.56'."""
-    m = _NUM.search(s or "")
+    text = _THOUSANDS.sub("", s or "")
+    if _SCI.search(text):
+        return None
+    m = _NUM.search(text)
     if not m:
         return None
     tok = m.group(0)
@@ -58,6 +98,12 @@ def t_int(s: str) -> int | None:
 
 
 def t_iso_date(s: str) -> str | None:
+    """Normalise a date, or refuse. Never emit a string that is not a real date.
+
+    The fallback used to return any `\\d{4}-\\d{2}-\\d{2}` substring without
+    checking it, so '2024-13-45' -- month thirteen, day forty-five -- came back
+    as a valid-looking value and flowed downstream. A refusal falls through to
+    the next locator in the stack; a plausible wrong date does not."""
     raw = _norm(s)
     for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y", "%d %B %Y", "%B %d, %Y", "%Y/%m/%d"):
         try:
@@ -65,7 +111,12 @@ def t_iso_date(s: str) -> str | None:
         except ValueError:
             continue
     m = re.search(r"\d{4}-\d{2}-\d{2}", raw)
-    return m.group(0) if m else None
+    if not m:
+        return None
+    try:
+        return date.fromisoformat(m.group(0)).isoformat()
+    except ValueError:
+        return None
 
 
 def t_digits(s: str) -> str | None:
@@ -92,7 +143,10 @@ def check(v: Validator, value: Any) -> bool:
     if value is None:
         return False
     if v.type == "number":
-        if not isinstance(value, (int, float)):
+        # `bool` is a subclass of `int`, so True would otherwise satisfy a
+        # numeric range check. Unreachable from the current transforms, but the
+        # kind of thing that becomes reachable later and is never noticed.
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
             return False
         if v.min is not None and value < v.min:
             return False
@@ -127,7 +181,7 @@ class Context:
 
     @classmethod
     def build(cls, html_text: str, base_url: str = "") -> Context:
-        doc = lhtml.fromstring(html_text)
+        doc = parse(html_text)
         found = _collect_jsonld(doc)
         return cls(doc=doc, base_url=base_url, jsonld=_align_jsonld(found), jsonld_all=found)
 
@@ -230,14 +284,21 @@ def _anchor_value(node, rel: str | None) -> str | None:
     return None
 
 
-def resolve(loc: Locator, root: Any, ctx: Context) -> str | None:
-    """Return the raw string a locator finds under `root`, or None."""
+def resolve_all(loc: Locator, root: Any, ctx: Context) -> list[str]:
+    """Every non-empty string this locator finds under `root`, in document order.
+
+    Only the first is ever extracted (see `_extract_field`); the rest exist so
+    the runtime can report *match multiplicity*. A locator that matched one node
+    per record yesterday and matches two today is the signature of an injected
+    decoy, and it is invisible to anything that only looks at the value.
+    """
     try:
         if loc.kind == "jsonld":
             if not (0 <= ctx.root_index < len(ctx.jsonld)):
-                return None
+                return []
             val = _dig(ctx.jsonld[ctx.root_index], loc.q)
-            return _norm(str(val)) if val is not None else None
+            got = _norm(str(val)) if val is not None else None
+            return [got] if got else []
 
         if loc.kind == "css":
             hits = root.cssselect(loc.q)
@@ -245,24 +306,27 @@ def resolve(loc: Locator, root: Any, ctx: Context) -> str | None:
             hits = root.xpath(loc.q)
         elif loc.kind == "text_anchor":
             needle = loc.q.lower()
-            hits = [
+            anchors = [
                 n
                 for n in root.iter()
                 if isinstance(n.tag, str) and needle in _norm(n.text_content()).lower()[: len(needle) + 24]
             ]
-            for n in hits:
-                got = _anchor_value(n, loc.rel)
-                if got:
-                    return got
-            return None
+            return [got for n in anchors if (got := _anchor_value(n, loc.rel))]
         elif loc.kind == "regex":
-            m = re.search(loc.q, root.text_content() if hasattr(root, "text_content") else str(root))
-            return _norm(m.group(1) if m.groups() else m.group(0)) if m else None
+            text = root.text_content() if hasattr(root, "text_content") else str(root)
+            pat = re.compile(loc.q)
+            out = []
+            for m in pat.finditer(text):
+                got = _norm(m.group(1) if m.groups() else m.group(0))
+                if got:
+                    out.append(got)
+            return out
         else:
-            return None
-    except Exception:  # a broken selector is a miss, not a crash
-        return None
+            return []
+    except LOCATOR_ERRORS:  # a broken selector is a miss, not a crash
+        return []
 
+    out = []
     for h in hits:
         if isinstance(h, str):
             got = _norm(h)
@@ -271,8 +335,14 @@ def resolve(loc: Locator, root: Any, ctx: Context) -> str | None:
         else:
             got = _norm(str(h))
         if got:
-            return got
-    return None
+            out.append(got)
+    return out
+
+
+def resolve(loc: Locator, root: Any, ctx: Context) -> str | None:
+    """Return the raw string a locator finds under `root`, or None."""
+    hits = resolve_all(loc, root, ctx)
+    return hits[0] if hits else None
 
 
 def _find_roots(spec: ExtractorSpec, ctx: Context) -> tuple[list[Any], int | None]:
@@ -286,7 +356,7 @@ def _find_roots(spec: ExtractorSpec, ctx: Context) -> tuple[list[Any], int | Non
                 hits = list(ctx.jsonld)
             else:
                 continue
-        except Exception:
+        except LOCATOR_ERRORS:
             continue
         if hits:
             return list(hits), tier
@@ -320,12 +390,13 @@ def _extract_field(fspec, root: Any, ctx: Context) -> FieldResult:
     last_fail: str | None = None
 
     for tier, loc in enumerate(fspec.stack):
-        raw = resolve(loc, root, ctx)
-        if raw is None:
+        hits = resolve_all(loc, root, ctx)
+        if not hits:
             continue
+        raw = hits[0]
         try:
             value = fn(raw)
-        except Exception:
+        except TRANSFORM_ERRORS:
             value = None
         if value is None:
             continue
@@ -336,6 +407,6 @@ def _extract_field(fspec, root: Any, ctx: Context) -> FieldResult:
         if bad is not None:
             last_fail = bad.type  # keep falling through -- do not emit garbage
             continue
-        return FieldResult(value=value, tier=tier, kind=loc.kind, raw=raw)
+        return FieldResult(value=value, tier=tier, kind=loc.kind, raw=raw, n_hits=len(hits))
 
     return FieldResult(value=None, tier=None, kind=None, failed_validator=last_fail)
