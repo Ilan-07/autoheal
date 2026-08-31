@@ -30,18 +30,23 @@ jobs:
 
       # The eval feeds set iteration order into a seeded RNG; a stray unsorted
       # set silently un-reproduces every published number. The test suite covers
-      # this via subprocesses, and running the whole eval under three fixed hash
-      # seeds catches anything the tests do not reach.
+      # this via subprocesses, and running the evals under three fixed hash seeds
+      # catches anything the tests do not reach.
+      #
+      # `ablations` is deliberately not in this loop. It is seven calls to
+      # `run_matrix` with different flags, and `heal_eval` already drives
+      # `run_matrix` under all three seeds -- so it was proving the same thing a
+      # fourth time at roughly four minutes a seed, which took CI from 19 seconds
+      # to over half an hour.
       - name: Reproducible under hash randomisation
         run: |
           for hs in 0 1 12345; do
             PYTHONHASHSEED=$hs uv run python -m eval.harness       --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
             PYTHONHASHSEED=$hs uv run python -m eval.heal_eval     --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
             PYTHONHASHSEED=$hs uv run python -m eval.perceive_eval --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
-            PYTHONHASHSEED=$hs uv run python -m eval.ablations     --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
           done
           for hs in 1 12345; do
-            for f in b0_static heal perceive ablations; do
+            for f in b0_static heal perceive; do
               diff -q "$RUNNER_TEMP/hs0/seed0/$f.json" "$RUNNER_TEMP/hs$hs/seed0/$f.json" \
                 || { echo "$f output varies with PYTHONHASHSEED=$hs"; exit 1; }
             done
