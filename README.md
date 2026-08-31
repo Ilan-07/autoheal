@@ -20,6 +20,19 @@ perceive → diagnose → patch → verify → remember
 
 Everything below is produced by `make all` from a clean checkout, offline, in about two minutes.
 
+### Where the four deliverables are
+
+| | |
+|---|---|
+| **1. Solution code + Improvement Changelog** | this repo · changelog in [§6](#6-improvement-changelog) |
+| **2. Reproduction guide** | [§8](#8-reproduction-guide) — clean environment, exact commands, versions, runtimes |
+| **3. Solution video** (4:05) | [`demo/autoheal-demo.mp4`](demo/autoheal-demo.mp4) |
+| **4. Agent trajectories** | [`trajectories/`](trajectories/) — four live runs, prompts verbatim |
+
+Also here: [`PLAN.md`](PLAN.md) is the plan written *before* any code, kept unedited as the
+baseline the changelog measures against. The main failure mode is [§9](#9-main-failure-mode) and
+the hot take is [§10](#10-hot-take).
+
 ---
 
 ## 1. Who has this problem
@@ -511,13 +524,16 @@ value, and inserts it ahead of the real one. Nothing errors; fill rate stays 100
 ## Appendix C — repository layout
 
 ```
-autoheal/     spec · runtime · perceive · diff · localize · patch · verify · memory · diagnose · loop
-eval/         sites (6, frozen) · mutators · harness · perceive_eval · heal_eval · ablations
-              b1_oneshot · trajectories · verify_truth · check_baseline · check_heal
-demo/         record.py → events.json → replay.html   (self-contained, offline)
-trajectories/ four captured agent runs
-results/      committed numbers for seeds 0–3; the drift lockfiles compare against these
-tests/        375 tests
+autoheal/      spec · runtime · perceive · diff · localize · patch · verify · memory · diagnose · loop
+eval/          sites/ (6, frozen + their generators) · mutators · harness
+               perceive_eval · heal_eval · ablations · b1_oneshot · trajectories
+               verify_truth · check_baseline · check_heal · author_specs · freeze_truth
+demo/          record.py → events.json → replay.html   (self-contained, offline)
+               cards.html + make_video.py → autoheal-demo.mp4
+trajectories/  four captured agent runs, prompts and replies verbatim
+results/       committed numbers for seeds 0–3; the drift lockfiles compare against these
+tests/         375 tests across six files
+PLAN.md        the pre-build plan, unedited — what the changelog measures against
 ```
 
 Ten of the eleven `autoheal/` modules never call a model. That is the engineering point: the agent

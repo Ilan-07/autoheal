@@ -1,3 +1,14 @@
+> **This is the plan as written before any code existed, kept unedited on purpose.**
+>
+> It is the baseline the Improvement Changelog in [README.md](README.md#6-improvement-changelog)
+> measures against, so several things in here were later contradicted by measurement and are
+> *deliberately* left wrong: it specifies nine health signals (there are ten), four sites (there
+> are six), `temperature=0` (removed on Claude Opus 5, returns a 400), and a cycles-to-recover
+> curve that turned out to be flat and was retired. **Read README.md for what the project
+> actually does and scores.** This file is here so you can see what changed and why.
+
+---
+
 # Autoheal — Self-Healing Extraction
 
 **Deadline: 2026-08-31 EOD. Today: 2026-08-29.** ~2.5 working days.

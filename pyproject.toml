@@ -1,7 +1,7 @@
 [project]
 name = "autoheal"
 version = "0.1.0"
-description = "Self-healing web extraction: perceive, diagnose, patch, verify, remember"
+description = "Self-healing web extraction: detect the scraper failure that raises nothing, then repair it"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
