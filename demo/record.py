@@ -138,6 +138,18 @@ def main() -> int:
     ev.add("page", act=3, site="shop", clean_html=page2, broken_html=broken2,
            mutation=log2[0].detail, marker=log2[0].detail.split("marked .")[1].split()[0],
            hold=1200)
+    # Act III gets its own static readout. Without it the panel kept showing Act
+    # I's quotes numbers under a header that said "shop" -- stale data presented
+    # as current, which is the failure this project is about, on our own slide.
+    run2 = extract(spec2, broken2, base_url=BASE_URL)
+    s2 = score(run2.values(), truth("shop"), spec2.field_names())
+    wrong2 = [f for f, v in s2.fields.items() if v[2] < 0.99]
+    ev.add("static", act=3, site="shop", records=len(run2.records),
+           fill=round(sum(s2.fill.values()) / len(s2.fill), 3), f1=round(s2.macro_f1, 3),
+           silent=bool(s2.silent), wrong_fields=sorted(wrong2),
+           sample=[{"field": f, "got": run2.values()[0].get(f),
+                    "expected": truth("shop")[0].get(f)} for f in sorted(wrong2)],
+           hold=2200)
     ev.add("note", act=3, text=f"memory holds {len(store.episodes())} episodes, all from "
            f"{sorted({e.site for e in store.episodes()})} -- nothing from shop", hold=1500)
     with_mem = record_repair(ev, 3, "shop", spec2, page2, broken2, baseline2, kg2, store,

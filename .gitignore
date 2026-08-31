@@ -16,3 +16,6 @@ wheels/
 # Coverage
 .coverage
 htmlcov/
+
+# Video build intermediates (the finished mp4 is committed)
+build/

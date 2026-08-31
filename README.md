@@ -73,6 +73,7 @@ the healing eval and both drift lockfiles. Full reproduction guide in §8.
 
 ```bash
 make demo-replay        # open the recorded demo — self-contained, no server, no network
+open demo/autoheal-demo.mp4   # the 2:53 narrated walkthrough
 ```
 
 ---
@@ -277,6 +278,16 @@ verbatim, not reconstructions. Regenerate with `make trajectories`.
 | [04 — baseline B1](trajectories/04-baseline-b1-one-shot.md) | One-shot baseline agent | the same repair from raw HTML, for comparison |
 
 ---
+
+### Video
+
+`demo/autoheal-demo.mp4` — 2:53, narrated. Built by `make video` + `make video-assemble`, which
+renders captured dashboard states against a generated narration track.
+
+**Disclosure: the narration is synthesised speech** (macOS `say`, voice Samantha), not a human
+recording. The build refuses to run if any spoken number disagrees with `demo/events.json` — the
+token count is read straight out of the recording rather than typed into the script, because a
+hardcoded figure went stale the first time the demo was re-recorded and the check caught it.
 
 ## 8. Reproduction guide
 

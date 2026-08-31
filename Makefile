@@ -1,4 +1,4 @@
-.PHONY: eval test truth verify check perceive heal check-heal ablations b1 trajectories demo demo-replay all
+.PHONY: eval test truth verify check perceive heal check-heal ablations b1 trajectories video video-assemble demo demo-replay all
 all: verify test check perceive heal check-heal
 
 test:
@@ -19,6 +19,10 @@ ablations:   ## which parts of the design are load-bearing (incl. null results)
 	uv run python -m eval.ablations --seed 0
 check-heal:  ## fail if the committed healing numbers no longer reproduce
 	uv run python -m eval.check_heal
+video:       ## narration audio + frame plan (then capture frames, then `make video-assemble`)
+	uv run python -m demo.make_video audio
+video-assemble: ## frames + narration -> demo/autoheal-demo.mp4
+	uv run python -m demo.make_video assemble
 trajectories: ## regenerate the four agent trajectories from live runs
 	uv run python -m eval.trajectories
 demo:        ## re-record the demo from real runs (set AUTOHEAL_LLM for real token counts)
