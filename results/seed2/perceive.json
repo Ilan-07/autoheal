@@ -1,0 +1,1176 @@
+[
+ {
+  "site": "books",
+  "recipe": "clean",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "books",
+  "recipe": "class_rename",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.75,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "availability",
+   "price"
+  ],
+  "signals": [
+   "fill_drop",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[availability] fill 0% vs baseline 100% (floor 95%)",
+   "[price] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "tag_swap",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "availability",
+   "price",
+   "title",
+   "url"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 20 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[availability] fill 0% vs baseline 100% (floor 95%)",
+   "[price] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "reparent",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "books",
+  "recipe": "attr_migration",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "books",
+  "recipe": "decoy_injection",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.75,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.903,
+  "broken_fields": [
+   "price"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values",
+   "value_drift"
+  ],
+  "evidence": [
+   "[price] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[price] 100% of values never seen in the 20-value baseline sample",
+   "[price] numeric drift: median 55.865 vs 41.38, KS=0.50"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "content_deferred",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.75,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "price"
+  ],
+  "signals": [
+   "fill_drop"
+  ],
+  "evidence": [
+   "[price] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "jsonld_drop",
+  "seed": 2,
+  "noop": true,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "books",
+  "recipe": "record_reorder",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "books",
+  "recipe": "redesign",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.75,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "availability",
+   "price"
+  ],
+  "signals": [
+   "fill_drop",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[availability] fill 0% vs baseline 100% (floor 95%)",
+   "[price] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "redesign+decoy",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.75,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "availability",
+   "price"
+  ],
+  "signals": [
+   "fill_drop",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[availability] fill 0% vs baseline 100% (floor 95%)",
+   "[price] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "full_rewrite",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "availability",
+   "price",
+   "title",
+   "url"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 20 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[availability] fill 0% vs baseline 100% (floor 95%)",
+   "[price] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "books",
+  "recipe": "content_churn",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 0.7625,
+  "silent": true,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.225,
+  "broken_fields": [],
+  "signals": [
+   "novel_values"
+  ],
+  "evidence": [
+   "[price] 95% of values never seen in the 20-value baseline sample"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "clean",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "quotes",
+  "recipe": "class_rename",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.637,
+  "broken_fields": [
+   "author",
+   "tags",
+   "text"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[author] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[tags] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[text] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "tag_swap",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "quotes",
+  "recipe": "reparent",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "quotes",
+  "recipe": "attr_migration",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "quotes",
+  "recipe": "decoy_injection",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.6667,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.887,
+  "broken_fields": [
+   "text",
+   "tags"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values"
+  ],
+  "evidence": [
+   "[tags] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[text] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[text] 100% of values never seen in the 10-value baseline sample"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "content_deferred",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.3333,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "author",
+   "text"
+  ],
+  "signals": [
+   "fill_drop"
+  ],
+  "evidence": [
+   "[author] fill 0% vs baseline 100% (floor 95%)",
+   "[text] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "jsonld_drop",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "quotes",
+  "recipe": "record_reorder",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "quotes",
+  "recipe": "redesign",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "tags",
+   "text",
+   "author"
+  ],
+  "signals": [
+   "fill_drop",
+   "novel_values",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[author] 100% of values never seen in the 10-value baseline sample",
+   "[author] text drift: token overlap 0.07 with baseline, mean length 33 vs 14",
+   "[author] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "redesign+decoy",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.6667,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.95,
+  "broken_fields": [
+   "author",
+   "tags",
+   "text"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[author] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[author] 100% of values never seen in the 10-value baseline sample",
+   "[author] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "full_rewrite",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "author",
+   "tags",
+   "text"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 10 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[author] fill 0% vs baseline 100% (floor 95%)",
+   "[tags] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "quotes",
+  "recipe": "content_churn",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 0.5,
+  "silent": true,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.25,
+  "broken_fields": [],
+  "signals": [
+   "novel_values"
+  ],
+  "evidence": [
+   "[author] 50% of values never seen in the 10-value baseline sample",
+   "[text] 100% of values never seen in the 10-value baseline sample"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "clean",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "wikitable",
+  "recipe": "class_rename",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "wikitable",
+  "recipe": "tag_swap",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "city",
+   "country",
+   "population"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 39 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[city] fill 0% vs baseline 100% (floor 95%)",
+   "[country] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "reparent",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "country",
+   "population",
+   "city"
+  ],
+  "signals": [
+   "fill_drop",
+   "match_count",
+   "novel_values",
+   "record_count",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[<record>] per-record field-presence entropy 0.28 vs -0.00 -- records no longer agree on which fields exist",
+   "[<record>] record count 41 vs baseline 39 (+5%)",
+   "[city] locator now matches 9.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "attr_migration",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "wikitable",
+  "recipe": "decoy_injection",
+  "seed": 2,
+  "noop": true,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "wikitable",
+  "recipe": "content_deferred",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.3333,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "city",
+   "population"
+  ],
+  "signals": [
+   "fill_drop"
+  ],
+  "evidence": [
+   "[city] fill 0% vs baseline 100% (floor 95%)",
+   "[population] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "jsonld_drop",
+  "seed": 2,
+  "noop": true,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "wikitable",
+  "recipe": "record_reorder",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "wikitable",
+  "recipe": "redesign",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "country",
+   "population",
+   "city"
+  ],
+  "signals": [
+   "fill_drop",
+   "match_count",
+   "novel_values",
+   "record_count",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[<record>] per-record field-presence entropy 0.28 vs -0.00 -- records no longer agree on which fields exist",
+   "[<record>] record count 41 vs baseline 39 (+5%)",
+   "[city] locator now matches 9.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "redesign+decoy",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "country",
+   "population",
+   "city"
+  ],
+  "signals": [
+   "fill_drop",
+   "match_count",
+   "novel_values",
+   "record_count",
+   "shape_entropy",
+   "tier_shift",
+   "value_drift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[<record>] per-record field-presence entropy 0.28 vs -0.00 -- records no longer agree on which fields exist",
+   "[<record>] record count 41 vs baseline 39 (+5%)",
+   "[city] locator now matches 9.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "full_rewrite",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "city",
+   "country",
+   "population"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 39 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[city] fill 0% vs baseline 100% (floor 95%)",
+   "[country] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "wikitable",
+  "recipe": "content_churn",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 0.6239,
+  "silent": true,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.25,
+  "broken_fields": [],
+  "signals": [
+   "novel_values"
+  ],
+  "evidence": [
+   "[population] 100% of values never seen in the 39-value baseline sample"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "clean",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "shop",
+  "recipe": "class_rename",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.637,
+  "broken_fields": [
+   "name",
+   "price",
+   "rating",
+   "stock"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[name] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[price] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[rating] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "tag_swap",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "name",
+   "price",
+   "rating",
+   "sku",
+   "stock"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 24 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[name] fill 0% vs baseline 100% (floor 95%)",
+   "[price] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "reparent",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "shop",
+  "recipe": "attr_migration",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.723,
+  "broken_fields": [
+   "sku",
+   "rating"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[rating] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[sku] served by locator tier 2 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "decoy_injection",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.8,
+  "silent": true,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 0.907,
+  "broken_fields": [
+   "price",
+   "rating"
+  ],
+  "signals": [
+   "match_count",
+   "novel_values",
+   "value_drift"
+  ],
+  "evidence": [
+   "[price] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one",
+   "[price] 100% of values never seen in the 24-value baseline sample",
+   "[price] numeric drift: median 173.22 vs 128.31, KS=0.42",
+   "[rating] locator now matches 2.00 nodes per record (baseline 1.00) -- an extra node is shadowing the real one"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "content_deferred",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": true,
+  "score": 0.552,
+  "broken_fields": [
+   "name",
+   "price",
+   "stock"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[name] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[price] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[stock] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "jsonld_drop",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "shop",
+  "recipe": "record_reorder",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.0,
+  "broken_fields": [],
+  "signals": [],
+  "evidence": []
+ },
+ {
+  "site": "shop",
+  "recipe": "redesign",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.723,
+  "broken_fields": [
+   "sku",
+   "name",
+   "price",
+   "rating",
+   "stock"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[name] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[price] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[rating] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "redesign+decoy",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 1.0,
+  "silent": false,
+  "degraded": false,
+  "fired": true,
+  "flagged": true,
+  "score": 0.637,
+  "broken_fields": [
+   "name",
+   "price",
+   "rating",
+   "stock"
+  ],
+  "signals": [
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record selector served by tier 1 (baseline tier 0)",
+   "[name] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[price] served by locator tier 1 (baseline tier 0); 100% of records shifted tier",
+   "[rating] served by locator tier 1 (baseline tier 0); 100% of records shifted tier"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "full_rewrite",
+  "seed": 2,
+  "noop": false,
+  "control": false,
+  "macro_f1": 0.0,
+  "silent": false,
+  "degraded": true,
+  "fired": true,
+  "flagged": true,
+  "score": 1.0,
+  "broken_fields": [
+   "name",
+   "price",
+   "rating",
+   "sku",
+   "stock"
+  ],
+  "signals": [
+   "fill_drop",
+   "record_count",
+   "tier_shift"
+  ],
+  "evidence": [
+   "[<record>] record count 0 vs baseline 24 (+100%)",
+   "[<record>] record selector served by tier None (baseline tier 0)",
+   "[name] fill 0% vs baseline 100% (floor 95%)",
+   "[price] fill 0% vs baseline 100% (floor 95%)"
+  ]
+ },
+ {
+  "site": "shop",
+  "recipe": "content_churn",
+  "seed": 2,
+  "noop": false,
+  "control": true,
+  "macro_f1": 0.7417,
+  "silent": true,
+  "degraded": false,
+  "fired": false,
+  "flagged": false,
+  "score": 0.25,
+  "broken_fields": [],
+  "signals": [
+   "novel_values"
+  ],
+  "evidence": [
+   "[price] 100% of values never seen in the 24-value baseline sample"
+  ]
+ }
+]

@@ -35,16 +35,36 @@ jobs:
       - name: Reproducible under hash randomisation
         run: |
           for hs in 0 1 12345; do
-            PYTHONHASHSEED=$hs uv run python -m eval.harness --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
+            PYTHONHASHSEED=$hs uv run python -m eval.harness       --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
+            PYTHONHASHSEED=$hs uv run python -m eval.heal_eval     --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
+            PYTHONHASHSEED=$hs uv run python -m eval.perceive_eval --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
+            PYTHONHASHSEED=$hs uv run python -m eval.ablations     --seed 0 --out "$RUNNER_TEMP/hs$hs" >/dev/null
           done
           for hs in 1 12345; do
-            diff -q "$RUNNER_TEMP/hs0/seed0/b0_static.json" "$RUNNER_TEMP/hs$hs/seed0/b0_static.json" \
-              || { echo "eval output varies with PYTHONHASHSEED=$hs"; exit 1; }
+            for f in b0_static heal perceive ablations; do
+              diff -q "$RUNNER_TEMP/hs0/seed0/$f.json" "$RUNNER_TEMP/hs$hs/seed0/$f.json" \
+                || { echo "$f output varies with PYTHONHASHSEED=$hs"; exit 1; }
+            done
           done
           echo "identical across hash seeds"
 
       - name: Baseline has not drifted
         run: uv run python -m eval.check_baseline
 
+      # Exits non-zero on ANY false alarm on a clean or content-churned page, and
+      # on any genuinely degraded case the monitor failed to fire on. A detector
+      # that cries wolf is worthless, so it is a build failure, not a metric.
+      - name: Breakage detection and false-alarm rate
+        run: uv run python -m eval.perceive_eval --seed 0
+
+      - name: Healing results have not drifted
+        run: uv run python -m eval.check_heal
+
       - name: Baseline summary
         run: uv run python -m eval.harness --seed 0 | tail -8
+
+      - name: Healing summary
+        run: uv run python -m eval.heal_eval --seed 0 | tail -14
+
+      - name: Ablations
+        run: uv run python -m eval.ablations --seed 0

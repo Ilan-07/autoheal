@@ -1,0 +1,1223 @@
+{
+ "model": "gpt-oss:120b-cloud",
+ "ts": 1788107798.790995,
+ "rows": [
+  {
+   "site": "books",
+   "recipe": "class_rename",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "availability",
+    "price"
+   ],
+   "f1_static": 0.75,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 11214,
+   "seconds": 10.3,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "article.css-y0cq65z",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "availability",
+     "kind": "css",
+     "q": "p.css-ev49gw1",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "p.css-igq8jtg",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "books",
+   "recipe": "tag_swap",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "availability",
+    "price",
+    "title",
+    "url"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.875,
+   "f1_oldpage": 0.875,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=FAIL",
+    "G3-clearance=pass"
+   ],
+   "tokens": 11330,
+   "seconds": 7.2,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "section.product_pod",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "availability",
+     "kind": "css",
+     "q": "p.instock.availability",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "p.price_color",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "title",
+     "kind": "css",
+     "q": "h3 > a",
+     "attr": null,
+     "strategy": "bare_tag",
+     "recovery": 0.5,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "url",
+     "kind": "css",
+     "q": "h3 > a",
+     "attr": "href",
+     "strategy": "bare_tag",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "books",
+   "recipe": "content_deferred",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "price"
+   ],
+   "f1_static": 0.75,
+   "f1_b1": 0.75,
+   "f1_oldpage": 1.0,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=pass",
+    "G3-clearance=FAIL"
+   ],
+   "tokens": 10466,
+   "seconds": 8.3,
+   "error": "",
+   "chosen": [
+    {
+     "field": "price",
+     "kind": "xpath",
+     "q": ".//p[contains(@class,'price_color')]/text()",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    }
+   ]
+  },
+  {
+   "site": "books",
+   "recipe": "redesign",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "availability",
+    "price"
+   ],
+   "f1_static": 0.75,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 11546,
+   "seconds": 7.4,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "article.css-y0cq65z",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "availability",
+     "kind": "css",
+     "q": "p.css-ev49gw1",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "p.css-igq8jtg",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "books",
+   "recipe": "redesign+decoy",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "availability",
+    "price"
+   ],
+   "f1_static": 0.75,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 13119,
+   "seconds": 6.1,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "article.css-y0cq65z",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "availability",
+     "kind": "css",
+     "q": "p.css-ev49gw1",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "p.css-igq8jtg",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "books",
+   "recipe": "full_rewrite",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "availability",
+    "price",
+    "title",
+    "url"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.875,
+   "f1_oldpage": 0.875,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=FAIL",
+    "G3-clearance=pass"
+   ],
+   "tokens": 13928,
+   "seconds": 12.6,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "section.x-article",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "availability",
+     "kind": "css",
+     "q": "p.css-ev49gw1",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 0.2667,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "p.css-igq8jtg",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 0.2667,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "title",
+     "kind": "css",
+     "q": "h3 > a",
+     "attr": null,
+     "strategy": "bare_tag",
+     "recovery": 0.1333,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "url",
+     "kind": "css",
+     "q": "h3 > a",
+     "attr": "href",
+     "strategy": "bare_tag",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "quotes",
+   "recipe": "decoy_injection",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "author",
+    "text"
+   ],
+   "f1_static": 0.3333,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 4184,
+   "seconds": 8.7,
+   "error": "",
+   "chosen": [
+    {
+     "field": "author",
+     "kind": "css",
+     "q": "small.author:not(.compare-at)",
+     "attr": null,
+     "strategy": "exclusion",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "text",
+     "kind": "css",
+     "q": "span.text:not(.compare-at)",
+     "attr": null,
+     "strategy": "exclusion",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "quotes",
+   "recipe": "content_deferred",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "author",
+    "text"
+   ],
+   "f1_static": 0.3333,
+   "f1_b1": 0.3333,
+   "f1_oldpage": 1.0,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=pass",
+    "G3-clearance=FAIL"
+   ],
+   "tokens": 3277,
+   "seconds": 8.9,
+   "error": "",
+   "chosen": [
+    {
+     "field": "author",
+     "kind": "css",
+     "q": "small.author[itemprop=\"author\"]",
+     "attr": null,
+     "strategy": "semantic_attr",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "text",
+     "kind": "css",
+     "q": "span.text[itemprop=\"text\"]",
+     "attr": null,
+     "strategy": "semantic_attr",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    }
+   ]
+  },
+  {
+   "site": "quotes",
+   "recipe": "redesign",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "tags",
+    "text",
+    "author"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 4629,
+   "seconds": 13.0,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "div.css-un9427q",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "tags",
+     "kind": "css",
+     "q": "meta[data-prop=\"keywords\"]",
+     "attr": "content",
+     "strategy": "semantic_attr",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "text",
+     "kind": "css",
+     "q": "span[data-prop=\"text\"]",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "author",
+     "kind": "css",
+     "q": "small[data-prop=\"author\"]",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "quotes",
+   "recipe": "redesign+decoy",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "text",
+    "tags",
+    "author"
+   ],
+   "f1_static": 0.6667,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 6567,
+   "seconds": 8.2,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "div.css-un9427q",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "text",
+     "kind": "css",
+     "q": "span[itemprop=\"text\"]:not(.promo-ref)",
+     "attr": null,
+     "strategy": "exclusion",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "tags",
+     "kind": "css",
+     "q": "meta[itemprop=\"keywords\"]",
+     "attr": "content",
+     "strategy": "semantic_attr",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "author",
+     "kind": "css",
+     "q": "small[itemprop=\"author\"]",
+     "attr": null,
+     "strategy": "semantic_attr",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "quotes",
+   "recipe": "full_rewrite",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "author",
+    "tags",
+    "text"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 4324,
+   "seconds": 7.7,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "div.css-un9427q",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "author",
+     "kind": "css",
+     "q": "small.css-t4wn6is",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "tags",
+     "kind": "css",
+     "q": "meta.css-d9afza5",
+     "attr": "content",
+     "strategy": "semantic_attr",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "text",
+     "kind": "css",
+     "q": "span.css-y0cq65z",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "wikitable",
+   "recipe": "tag_swap",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "city",
+    "country",
+    "population"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.9787,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 66717,
+   "seconds": 13.1,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "xpath",
+     "q": "//div[contains(@class,\"wikitable\")]//div[contains(@class,\"x-tr\")]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "city",
+     "kind": "xpath",
+     "q": "./div[contains(@class,\"x-th\")]//a",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.9512,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "country",
+     "kind": "xpath",
+     "q": "./div[@class=\"x-td\"][1]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.9268,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "population",
+     "kind": "xpath",
+     "q": "(./div[contains(@style,\"text-align:right\")])[1]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.9268,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "wikitable",
+   "recipe": "reparent",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "country",
+    "population",
+    "city"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.9915,
+   "f1_oldpage": 0.9915,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 61861,
+   "seconds": 12.8,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "xpath",
+     "q": "//table[contains(@class,\"wikitable\")]//tr[.//td]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "country",
+     "kind": "xpath",
+     "q": ".//td[1]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.9268,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "population",
+     "kind": "xpath",
+     "q": ".//td[2]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.9512,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "city",
+     "kind": "xpath",
+     "q": ".//th//a",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.9512,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "wikitable",
+   "recipe": "content_deferred",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "city",
+    "population"
+   ],
+   "f1_static": 0.3333,
+   "f1_b1": 0.6667,
+   "f1_oldpage": 1.0,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=pass",
+    "G3-clearance=FAIL"
+   ],
+   "tokens": 58674,
+   "seconds": 10.4,
+   "error": "",
+   "chosen": [
+    {
+     "field": "city",
+     "kind": "xpath",
+     "q": "./th/a",
+     "attr": "title",
+     "strategy": "positional",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "population",
+     "kind": "regex",
+     "q": "./td[2]/@data-mw",
+     "attr": null,
+     "strategy": "regex_shape",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    }
+   ]
+  },
+  {
+   "site": "wikitable",
+   "recipe": "redesign",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "country",
+    "population",
+    "city"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.0,
+   "f1_oldpage": 0.9872,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=pass",
+    "G3-clearance=FAIL"
+   ],
+   "tokens": 64423,
+   "seconds": 11.9,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "xpath",
+     "q": "//table[contains(@class,\"wikitable\")]//tr[th//a[@title]]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "country",
+     "kind": "xpath",
+     "q": "./td[1]/text()[normalize-space()]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "population",
+     "kind": "xpath",
+     "q": "./td[2]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "city",
+     "kind": "xpath",
+     "q": "./th//a",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "wikitable",
+   "recipe": "redesign+decoy",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "country",
+    "population",
+    "city"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.0,
+   "f1_oldpage": 0.9831,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=pass",
+    "G3-clearance=FAIL"
+   ],
+   "tokens": 63680,
+   "seconds": 13.4,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "xpath",
+     "q": "//table[contains(@class,'wikitable')]//tr[th]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "country",
+     "kind": "xpath",
+     "q": "./td[1]/text()[normalize-space()]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "population",
+     "kind": "xpath",
+     "q": "./td[2]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "city",
+     "kind": "xpath",
+     "q": "./th//a",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "wikitable",
+   "recipe": "full_rewrite",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "city",
+    "country",
+    "population"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 0.0,
+   "f1_oldpage": 1.0,
+   "healed": false,
+   "gates": [
+    "G1-recovery=FAIL",
+    "G2-regression=pass",
+    "G3-clearance=FAIL"
+   ],
+   "tokens": 69440,
+   "seconds": 19.5,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "xpath",
+     "q": "//div[contains(@class,'x-tr') and @role='row']",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "city",
+     "kind": "xpath",
+     "q": "./div[@scope='row']/a",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "country",
+     "kind": "xpath",
+     "q": "./div[2]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "population",
+     "kind": "xpath",
+     "q": "./div[3]",
+     "attr": null,
+     "strategy": "positional",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    }
+   ]
+  },
+  {
+   "site": "shop",
+   "recipe": "tag_swap",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "name",
+    "price",
+    "rating",
+    "sku",
+    "stock"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 7275,
+   "seconds": 13.4,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "section.product-card",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "name",
+     "kind": "css",
+     "q": "h3.product-title",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "span.product-price",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "rating",
+     "kind": "css",
+     "q": "span.product-rating",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "sku",
+     "kind": "css",
+     "q": "[data-sku]",
+     "attr": "data-sku",
+     "strategy": "semantic_attr",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "stock",
+     "kind": "css",
+     "q": "p.product-stock",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "shop",
+   "recipe": "decoy_injection",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "price",
+    "rating"
+   ],
+   "f1_static": 0.8,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 7426,
+   "seconds": 6.6,
+   "error": "",
+   "chosen": [
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "span.product-price:not(.was-value)",
+     "attr": null,
+     "strategy": "exclusion",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    },
+    {
+     "field": "rating",
+     "kind": "css",
+     "q": "span.product-rating:not(.was-value)",
+     "attr": null,
+     "strategy": "exclusion",
+     "recovery": 1.0,
+     "survives_old": true,
+     "resolves": true
+    }
+   ]
+  },
+  {
+   "site": "shop",
+   "recipe": "full_rewrite",
+   "seed": 0,
+   "model": "gpt-oss:120b-cloud",
+   "fields": [
+    "name",
+    "price",
+    "rating",
+    "sku",
+    "stock"
+   ],
+   "f1_static": 0.0,
+   "f1_b1": 1.0,
+   "f1_oldpage": 1.0,
+   "healed": true,
+   "gates": [
+    "G1-recovery=pass",
+    "G2-regression=pass",
+    "G3-clearance=pass"
+   ],
+   "tokens": 5959,
+   "seconds": 7.2,
+   "error": "",
+   "chosen": [
+    {
+     "field": "__record__",
+     "kind": "css",
+     "q": "section.x-article",
+     "attr": null,
+     "strategy": "stable_class",
+     "recovery": null,
+     "survives_old": null,
+     "resolves": null
+    },
+    {
+     "field": "name",
+     "kind": "css",
+     "q": "h3.css-y0cq65z",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "price",
+     "kind": "css",
+     "q": "span.css-igq8jtg",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "rating",
+     "kind": "css",
+     "q": "span.css-ev49gw1",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    },
+    {
+     "field": "sku",
+     "kind": "css",
+     "q": ".",
+     "attr": "data-sku",
+     "strategy": "semantic_attr",
+     "recovery": 0.0,
+     "survives_old": false,
+     "resolves": false
+    },
+    {
+     "field": "stock",
+     "kind": "css",
+     "q": "p.css-un9427q",
+     "attr": null,
+     "strategy": "hashed_class",
+     "recovery": 1.0,
+     "survives_old": false,
+     "resolves": true
+    }
+   ]
+  }
+ ]
+}

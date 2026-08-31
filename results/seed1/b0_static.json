@@ -174,7 +174,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['btn-primary', 'product_pod'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['btn-primary', 'product_pod'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -371,7 +371,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['css-ieqh524', 'css-yng5by1'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['css-ieqh524', 'css-yng5by1'] marked .strikethrough (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -618,7 +618,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['tags', 'text'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['tags', 'text'] marked .promo-ref (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -805,7 +805,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['css-yng5by1', 'css-a2rogub'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['css-yng5by1', 'css-a2rogub'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -1502,7 +1502,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['product-rating', 'product-stock'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['product-rating', 'product-stock'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],
@@ -1719,7 +1719,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['css-a2rogub', 'css-bb8ayn1'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['css-a2rogub', 'css-bb8ayn1'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],

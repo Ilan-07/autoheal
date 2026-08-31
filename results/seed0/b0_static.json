@@ -174,7 +174,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['instock', 'btn'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['instock', 'btn'] marked .strikethrough (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -371,7 +371,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['css-ev49gw1', 'css-vpuemop'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['css-ev49gw1', 'css-vpuemop'] marked .rrp (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -618,7 +618,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['author', 'text'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['author', 'text'] marked .compare-at (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -805,7 +805,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['css-y0cq65z', 'css-igq8jtg'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['css-y0cq65z', 'css-igq8jtg'] marked .promo-ref (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -1502,7 +1502,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['product-rating', 'product-price'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['product-rating', 'product-price'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],
@@ -1717,7 +1717,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['css-y0cq65z', 'css-t4wn6is'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['css-y0cq65z', 'css-t4wn6is'] marked .rrp (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],

@@ -174,7 +174,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['price_color', 'btn-primary'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['price_color', 'btn-primary'] marked .promo-ref (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -371,7 +371,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['css-207xwx2', 'css-kz37p5r'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['css-207xwx2', 'css-kz37p5r'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -618,7 +618,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['tags', 'text'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['tags', 'text'] marked .list-price (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -805,7 +805,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['css-826rcbx', 'css-nck1z6x'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['css-826rcbx', 'css-nck1z6x'] marked .was-value (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -1502,7 +1502,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['product-rating', 'product-price'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['product-rating', 'product-price'] marked .old-value (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],
@@ -1717,7 +1717,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['css-3uy17k9', 'css-nck1z6x'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['css-3uy17k9', 'css-nck1z6x'] marked .prev-price (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],

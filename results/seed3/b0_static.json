@@ -174,7 +174,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['availability', 'price_color'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['availability', 'price_color'] marked .list-price (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -371,7 +371,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 40 decoys on ['css-94zjoj7', 'css-0ovbrku'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 40 decoys on ['css-94zjoj7', 'css-0ovbrku'] marked .list-price (plausible wrong values, ahead of the real node)",
     "changed": 40
    }
   ],
@@ -618,7 +618,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['tags', 'text'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['tags', 'text'] marked .rrp (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -805,7 +805,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 20 decoys on ['css-94zjoj7', 'css-4q9om48'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 20 decoys on ['css-94zjoj7', 'css-4q9om48'] marked .prev-price (plausible wrong values, ahead of the real node)",
     "changed": 20
    }
   ],
@@ -1502,7 +1502,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['product-meta', 'product-rating'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['product-meta', 'product-rating'] marked .list-price (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],
@@ -1717,7 +1717,7 @@
    {
     "name": "decoy_injection",
     "severity": 2,
-    "detail": "injected 48 decoys on ['css-94zjoj7', 'css-4q9om48'] (plausible wrong values, ahead of the real node)",
+    "detail": "injected 48 decoys on ['css-94zjoj7', 'css-4q9om48'] marked .rrp (plausible wrong values, ahead of the real node)",
     "changed": 48
    }
   ],
